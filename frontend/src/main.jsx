@@ -7,17 +7,27 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
+import Login from "./Login.jsx";
 import App from "./App.jsx";
-import Basic from "./components/Basic.jsx";
+import Basic from "./components/basic/Basic.jsx";
+import Project from "./components/project/Project.jsx";
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />,
+  },
   {
     path: "/",
     element: <App />,
     children: [
       {
-        path: "Basic/",
+        path: "basic/",
         element: <Basic />,
+      },
+      {
+        path: "project/",
+        element: <Project />,
       },
     ],
   },
