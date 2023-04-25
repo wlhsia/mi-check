@@ -12,9 +12,89 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import { DataGrid } from "@mui/x-data-grid";
 
 import ListItems from "./ListItems";
 
+const columns = [
+  { field: "id", headerName: "項次", width: 70 },
+  { field: "factory", headerName: "受檢廠", width: 70 },
+  { field: "itemId", headerName: "評核項目序號", width: 130 },
+  { field: "item", headerName: "評核項目", width: 130 },
+  { field: "stdId", headerName: "評核標準序號", width: 130 },
+  { field: "std", headerName: "評核標準", width: 520 },
+  { field: "type", headerName: "缺失分類", width: 130 },
+  { field: "score1", headerName: "參考配分", width: 130 },
+  { field: "score2", headerName: "得分", width: 130 },
+  { field: "description", headerName: "優缺點說明", width: 520 },
+];
+
+const rows = [
+  {
+
+    id: 1,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-001",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 2,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-002",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 3,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-003",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 4,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-004",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 5,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-005",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 6,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-006",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 7,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-007",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 8,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-008",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+  {
+    id: 9,
+    itemId: "E01",
+    item: "電氣室",
+    stdId: "E01-009",
+    std: "電氣室內備置連身工作服(至少1套)或電弧防護衣(至少1套)，供承包廠商或外稽人員使用。",
+  },
+];
 const drawerWidth = "20rem";
 
 const Drawer = styled(MuiDrawer, {
@@ -111,7 +191,7 @@ function DashboardContent() {
           overflow: "auto",
         }}
       >
-      <Typography></Typography>
+        <Typography></Typography>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
@@ -122,9 +202,52 @@ function DashboardContent() {
             <Tab label="查核&改善彙總" />
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0}></TabPanel>
+        <TabPanel value={value} index={0}>
+          <Box sx={{
+            display: "flex",
+            justifyContent: 'flex-end'
+          }}>
+            <Button variant="contained" color="warning" sx={{
+              mr: 1
+            }}>
+              排定查核項目
+            </Button>
+            <Button variant="contained" color="success">
+              匯出
+            </Button>
+          </Box>
+          <Box sx={{ height: 500, width: '100%', mt: 1, backgroundColor: "white" }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+            />
+          </Box>
+        </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Two
+        <Box sx={{
+            display: "flex",
+            justifyContent: 'flex-end'
+          }}>
+            <Button variant="contained" color="warning" sx={{
+              mr: 1
+            }}>
+              查核上傳
+            </Button>
+            <Button variant="contained" color="success">
+              改善上傳
+            </Button>
+          </Box>
+          <Box sx={{ height: 500, width: '100%', mt: 1, backgroundColor: "white" }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+            /></Box>
         </TabPanel>
       </Box>
     </Box>

@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
@@ -12,7 +13,31 @@ const columns = [
   { field: "itemId", headerName: "評核項目序號", width: 130 },
   { field: "item", headerName: "評核項目", width: 130 },
   { field: "stdId", headerName: "評核標準序號", width: 130 },
-  { field: "std", headerName: "評核標準", width: 520 },
+  { field: "std", headerName: "評核標準", width: 550 },
+  {
+    field: 'actions',
+    type: 'actions',
+    width: 150,
+    renderCell: () => (
+      <strong>
+        <Button
+          variant="contained"
+          size="small"
+          color="warning"
+        >
+          編輯
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          color="error"
+          sx={{ ml: 1 }}
+        >
+          刪除
+        </Button>
+      </strong>
+    ),
+  },
 ];
 
 const rows = [
@@ -137,12 +162,16 @@ export default function Orders() {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
+          <Box sx={{ display: "flex", justifyContent: 'flex-end', mb: 1 }}>
+            <Button variant="contained" color="success">
+              新增項目
+            </Button>
+          </Box>
           <DataGrid
             rows={rows}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
-            checkboxSelection
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
