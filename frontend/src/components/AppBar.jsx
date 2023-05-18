@@ -29,7 +29,7 @@ export default function ResponsiveAppBar() {
   };
 
   const handleCloseNavMenu = (page) => {
-    page === "查核項目基本資料" ? navigate("/basic") : navigate("/project");
+    page === "查核項目基本資料" ? navigate("/item") : navigate("/project");
     setAnchorElNav(null);
   };
 
