@@ -15,13 +15,13 @@ def create_app():
     db.init_app(app)
     ma.init_app(app)
 
-    # from .resources.item import Item, ItemList
-    # api.add_resource(ItemList, '/items')
-    # api.add_resource(Item, '/items/<item_id>')
-    # api.init_app(app)
+    from .resources.item import Item, ItemList
+    api.add_resource(Item, '/items/<item_id>')
+    api.add_resource(ItemList, '/items')
+    api.init_app(app)
 
-    with app.app_context():
-        from . import models
-        db.create_all()
+    # with app.app_context():
+    #     from . import models
+    #     db.create_all()
 
     return app

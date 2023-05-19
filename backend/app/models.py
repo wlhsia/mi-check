@@ -5,12 +5,11 @@ class Users(db.Model):
     UserID = db.Column(db.Integer, primary_key=True)
     NotesID = db.Column(db.String)
     Name = db.Column(db.Unicode)
-    DivisionNo = db.Column(db.String)
-    Division = db.Column(db.Unicode)
     DepartmentNo = db.Column(db.String)
+    Division = db.Column(db.Unicode)
     Department = db.Column(db.Unicode)
-    SectionNo = db.Column(db.String)
     Section = db.Column(db.Unicode)
+    IsAdmin = db.Column(db.Boolean)
 
 class Projects(db.Model):
     __tablename__ = 'Projects'
@@ -19,7 +18,6 @@ class Projects(db.Model):
     InspectorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedDivision = db.Column(db.Unicode)
     InspectedDepartment = db.Column(db.Unicode)
-    
     
 class Items(db.Model):
     __tablename__ = 'Items'
@@ -32,20 +30,23 @@ class Items(db.Model):
     StandardNo = db.Column(db.String)
     Standard = db.Column(db.Unicode)
 
-class ProjectItem(db.Model):
-    __tablename__ = 'ProjectItem'
-    ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID), primary_key=True)
-    ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID), primary_key=True)
-    CheckDate = db.Column(db.DateTime)
-    Score = db.Column(db.Float)
-    CheckDescription = db.Column(db.Unicode)
-    CheckPhoto = db.Column(db.Unicode)
-    MissingAspect = db.Column(db.Unicode)
-    MissingType = db.Column(db.String)
-    ImproveDate = db.Column(db.DateTime)
-    ImproveDescription = db.Column(db.Unicode)
-    ImproveTeam = db.Column(db.Unicode)
-    PersonInCharge = db.Column(db.Unicode)
-    Supervisor = db.Column(db.Unicode)
+# class ProjectItem(db.Model):
+#     __tablename__ = 'ProjectItem'
+#     ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID), primary_key=True)
+#     ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID), primary_key=True)
+#     CheckDate = db.Column(db.DateTime)
+#     ReferenceScore = db.Column(db.Float)
+#     Score = db.Column(db.Float)
+#     CheckDescription = db.Column(db.Unicode)
+#     CheckPhoto = db.Column(db.String)
+#     MissingAspect = db.Column(db.Unicode)
+#     MissingType = db.Column(db.String)
+#     ImproveEstimatedDate = db.Column(db.DateTime)
+#     ImproveDescription = db.Column(db.Unicode)
+#     ImprovePhoto = db.Column(db.String)
+#     ImproveCompleteDate = db.Column(db.DateTime)
+#     ImproveSection = db.Column(db.Unicode)
+#     PersonInChargeID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
+#     SupervisorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
 
 

@@ -10,21 +10,24 @@ items_schema = ItemSchema(many=True)
 
 class Item(Resource):
     def get(self, item_id):
-        item = MICheckItem.query.filter(MICheckItem.ItemID==item_id).first()
+        item = Items.query.filter(Items.ItemID==item_id).first()
         return item_schema.dump(item)
     def delete(self, item_id):
-        item = MICheckItem.query.filter(MICheckItem.ItemID==item_id).first()
+        item = Items.query.filter(Items.ItemID==item_id).first()
         db.session.delete(item)
         db.session.commit()
         return 'success'
 
 class ItemList(Resource):
     def get(self):
-        t = request.args['type']
-        items = MICheckItem.query.filter(MICheckItem).all()
+        item_type = request.args['ItemType']
+        if item_type is None:
+            items = Items.query.all()
+        else:
+            items = Items.query.filter(Items.ItemType==item_type).all()
         return items_schema.dump(items)
     def post(self):
-        item = MICheckItem(**request.json)
+        item = Items(**request.json)
         db.session.merge(item)
         db.session.commit()
         return 'success'
