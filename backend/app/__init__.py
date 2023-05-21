@@ -15,7 +15,10 @@ def create_app():
     db.init_app(app)
     ma.init_app(app)
 
+    from .resources.user import User, UserList
     from .resources.item import Item, ItemList
+    api.add_resource(User, '/users/<user_id>')
+    api.add_resource(UserList, '/users')
     api.add_resource(Item, '/items/<item_id>')
     api.add_resource(ItemList, '/items')
     api.init_app(app)

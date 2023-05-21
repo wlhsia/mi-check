@@ -15,9 +15,10 @@ class Projects(db.Model):
     __tablename__ = 'Projects'
     ProjectID = db.Column(db.Integer, primary_key=True)
     ProjectNo = db.Column(db.String)
+    ProjectType = db.Column(db.String)
     InspectorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
-    InspectedDivision = db.Column(db.Unicode)
-    InspectedDepartment = db.Column(db.Unicode)
+    InspectedPersonID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
+    InspectedDate = db.Column(db.DateTime)
     
 class Items(db.Model):
     __tablename__ = 'Items'
@@ -26,27 +27,19 @@ class Items(db.Model):
     ItemType = db.Column(db.Unicode)
     ItemNo = db.Column(db.String)
     Item = db.Column(db.Unicode)
-    ItemDetail = db.Column(db.Unicode)
     StandardNo = db.Column(db.String)
     Standard = db.Column(db.Unicode)
 
-# class ProjectItem(db.Model):
-#     __tablename__ = 'ProjectItem'
-#     ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID), primary_key=True)
-#     ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID), primary_key=True)
-#     CheckDate = db.Column(db.DateTime)
-#     ReferenceScore = db.Column(db.Float)
-#     Score = db.Column(db.Float)
-#     CheckDescription = db.Column(db.Unicode)
-#     CheckPhoto = db.Column(db.String)
-#     MissingAspect = db.Column(db.Unicode)
-#     MissingType = db.Column(db.String)
-#     ImproveEstimatedDate = db.Column(db.DateTime)
-#     ImproveDescription = db.Column(db.Unicode)
-#     ImprovePhoto = db.Column(db.String)
-#     ImproveCompleteDate = db.Column(db.DateTime)
-#     ImproveSection = db.Column(db.Unicode)
-#     PersonInChargeID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
-#     SupervisorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
+class ProjectItem(db.Model):
+    __tablename__ = 'ProjectItem'
+    ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID), primary_key=True)
+    ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID), primary_key=True)
+    ID = db.Column(db.Integer, primary_key=True)
+    ReferenceScore = db.Column(db.Float)
+    CheckDescription = db.Column(db.Unicode)
+    CheckClass = db.Column(db.Unicode)
+    DangerClass = db.Column(db.String)
+    CheckPhoto = db.Column(db.String)
+    Score = db.Column(db.Float)
 
 
