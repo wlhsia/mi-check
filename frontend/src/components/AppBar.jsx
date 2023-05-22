@@ -12,12 +12,29 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import ChecklistIcon from "@mui/icons-material/Checklist";
+import axios from "axios";
 
 const pages = ["查核項目基本資料", "查核案件"];
-const settings = ["登出"];
+// const settings = ["登出"];
 
 export default function ResponsiveAppBar() {
   const navigate = useNavigate();
+  
+  // 登入使用者
+  const [currentUser, setCurrentUser] = React.useState("");
+  React.useEffect(() => {
+    axios.get("/api/user").then((res) => {
+      setCurrentUser(res.data.NotesID);
+    });
+  }, []);
+
+  // 登出
+  const handleClickLogout = () => {
+    axios.get("/api/logout").then(() => {
+      navigate("/login");
+    });
+  };
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -130,7 +147,7 @@ export default function ResponsiveAppBar() {
                   }}
                   onClick={handleOpenUserMenu}
                 >
-                  {"N000171574"}
+                  {currentUser}
                 </Typography>
               </Button>
             </Tooltip>
@@ -150,11 +167,14 @@ export default function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {/* {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
+              <MenuItem key="Logout" onClick={handleClickLogout}>
+                <Typography textAlign="center">登出</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

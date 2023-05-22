@@ -1,4 +1,6 @@
 import * as React from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -29,13 +31,33 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  let navigate = useNavigate();
+
+  const [NotesID, setNotesID] = React.useState("");
+  const [Password, setPassword] = React.useState("");
+
+  const [msg, setMsg] = React.useState("");
+
+  const handleTextFieldChange = (e) => {
+    switch (e.target.id) {
+      case "notesID":
+        setNotesID(e.target.value);
+        break;
+      case "password":
+        setPassword(e.target.value);
+        break;
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    axios
+      .post("/api/login", { NotesID, Password })
+      .then((res) => {
+        console.log(res);
+        navigate("/item");
+      })
+      .catch((err) => setMsg(err.response.data.msg));
   };
   return (
     <ThemeProvider theme={theme}>
@@ -69,21 +91,22 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="username"
+              id="notesID"
               label="NotesID"
-              name="email"
-              autoComplete="email"
+              value={NotesID}
               autoFocus
+              onChange={handleTextFieldChange}
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
               label="密碼"
               type="password"
               id="password"
+              value={Password}
               autoComplete="current-password"
+              onChange={handleTextFieldChange}
             />
             <Button
               type="submit"
@@ -93,6 +116,7 @@ export default function SignIn() {
             >
               登入
             </Button>
+            <Typography color="error">{msg}</Typography>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

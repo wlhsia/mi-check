@@ -41,5 +41,3 @@ class ProjectItem(db.Model):
     DangerClass = db.Column(db.String)
     CheckPhoto = db.Column(db.String)
     Score = db.Column(db.Float)
-
-
