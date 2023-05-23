@@ -9,8 +9,8 @@ import "@fontsource/roboto/700.css";
 
 import Login from "./Login.jsx";
 import App from "./App.jsx";
-import Item from "./components/item/index.jsx";
-import Project from "./components/project/Project.jsx";
+import ItemPage from "./components/ItemPage.jsx";
+import ProjectPage from "./components/ProjectPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,11 +23,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "item/",
-        element: <Item />,
+        element: <ItemPage />,
       },
       {
         path: "project/",
-        element: <Project />,
+        element: <ProjectPage />,
       },
     ],
   },

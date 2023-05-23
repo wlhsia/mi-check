@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,10 +13,9 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import ChecklistIcon from "@mui/icons-material/Checklist";
-import axios from "axios";
+
 
 const pages = ["查核項目基本資料", "查核案件"];
-// const settings = ["登出"];
 
 export default function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -56,9 +56,9 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      {/* <Container maxWidth="xl"> */}
         <Toolbar disableGutters>
-          <ChecklistIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <ChecklistIcon sx={{ display: { xs: "none", md: "flex" }, mr: 2 }} />
           <Typography
             variant="h6"
             noWrap
@@ -167,18 +167,13 @@ export default function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {/* {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))} */}
               <MenuItem key="Logout" onClick={handleClickLogout}>
                 <Typography textAlign="center">登出</Typography>
               </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
-      </Container>
+      {/* </Container> */}
     </AppBar>
   );
 }

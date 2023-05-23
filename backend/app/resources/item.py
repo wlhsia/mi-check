@@ -11,11 +11,11 @@ item_schema = ItemSchema()
 items_schema = ItemSchema(many=True)
 
 class Item(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self, item_id):
         item = Items.query.filter(Items.ItemID==item_id).first()
         return item_schema.dump(item)
-    @jwt_required()
+    # @jwt_required()
     def delete(self, item_id):
         item = Items.query.filter(Items.ItemID==item_id).first()
         db.session.delete(item)
@@ -23,16 +23,15 @@ class Item(Resource):
         return 'success'
 
 class ItemList(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
-        # item_type = request.args['ItemType']
-        # if item_type is None:
-        #     items = Items.query.all()
-        # else:
-        #     items = Items.query.filter(Items.ItemType==item_type).all()
-        items = Items.query.all()
+        item_type = request.args['itemType']
+        if item_type is None:
+            items = Items.query.all()
+        else:
+            items = Items.query.filter(Items.ItemType==item_type).all()
         return items_schema.dump(items)
-    @jwt_required()
+    # @jwt_required()
     def post(self):
         item = Items(**request.json)
         db.session.merge(item)
