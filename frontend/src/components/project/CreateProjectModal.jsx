@@ -10,6 +10,27 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+const departments = [
+  {
+    departmentNo: "H1",
+    department: "ARO1",
+  },
+  {
+    departmentNo: "H2",
+    department: "ARO2",
+  },
+  {
+    departmentNo: "H3",
+    department: "ARO3",
+  },
+];
+
 export default function CreateProjectModal(props) {
   const { open, toggle } = props;
 
@@ -19,15 +40,43 @@ export default function CreateProjectModal(props) {
   React.useEffect(() => {
     axios.get("/api/user").then((res) => {
       setCurrentUser(res.data.Name);
+      setProjectTemp;
     });
   }, []);
+
+  const [projectTemp, setProjectTemp] = React.useState({
+    ProjectNo: `${departments[0].departmentNo}--R`,
+    ProjectType: "R",
+    InspectedDepartmentNo: departments[0].departmentNo,
+    InspectedDate: null,
+  });
+
+  const handleFormChange = (e) => {
+    setProjectTemp((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setProjectTemp((prev) => ({
+      ...prev,
+      ProjectNo: `${prev.InspectedDepartmentNo}-${prev.InspectedDate}-${prev.ProjectType}`,
+    }));
+  };
+
+  const handleDateChange = (newValue) => {
+    const formattedDate = `${newValue.$y}${String(newValue.$M + 1).padStart(
+      2,
+      "0"
+    )}${String(newValue.$D).padStart(2, "0")}`;
+    setProjectTemp((prev) => ({
+      ...prev,
+      InspectedDate: newValue,
+      ProjectNo: `${prev.InspectedDepartmentNo}-${formattedDate}-${prev.ProjectType}`,
+    }));
+  };
 
   return (
     <Modal open={open}>
       <Box
         sx={{
           position: "absolute",
-          top: "30%",
+          top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 600,
@@ -54,14 +103,53 @@ export default function CreateProjectModal(props) {
             disabled
             label="查核案號"
             required
-            defaultValue="Hello World"
+            value={projectTemp.ProjectNo}
           />
+
           <FormControl>
-            <InputLabel id="ProjectType">機能組</InputLabel>
+            <InputLabel id="InspectedDepartmentNo" required>
+              受檢單位
+            </InputLabel>
             <Select
-              labelId="ProjectType-select-label"
+              id="InspectedDepartment-select"
+              label="InspectedDepartmentNo"
+              name="InspectedDepartmentNo"
+              onChange={handleFormChange}
+              defaultValue={departments[0].departmentNo}
+            >
+              {departments.map((department) => {
+                return (
+                  <MenuItem
+                    key={department.departmentNo}
+                    value={department.departmentNo}
+                  >
+                    {department.department}廠({department.departmentNo})
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale={"zh-cn"}
+          >
+            <DatePicker
+              label="受檢日期"
+              name="InspectedDate"
+              value={projectTemp.InspectedDate}
+              onChange={handleDateChange}
+            />
+          </LocalizationProvider>
+          <FormControl>
+            <InputLabel id="ProjectTypeLabel" required>
+              機能組
+            </InputLabel>
+            <Select
               id="ProjectType-select"
               label="ProjectType"
+              name="ProjectType"
+              onChange={handleFormChange}
+              defaultValue={"R"}
             >
               <MenuItem value={"R"}>轉機(R)</MenuItem>
               <MenuItem value={"S"}>靜態(S)</MenuItem>
@@ -69,20 +157,16 @@ export default function CreateProjectModal(props) {
             </Select>
           </FormControl>
           <FormControl>
-            <InputLabel id="InspectedDepartment">受檢單位</InputLabel>
+            <InputLabel id="ProjectTypeLabel" required>
+              受檢人員
+            </InputLabel>
             <Select
-              labelId="InspectedDepartment-select-label"
-              id="InspectedDepartment-select"
-              label="InspectedDepartment"
-            >
-              <MenuItem value={"H1"}>ARO1廠(H1)</MenuItem>
-              <MenuItem value={"H2"}>ARO1廠(H2)</MenuItem>
-              <MenuItem value={"H3"}>ARO1廠(H3)</MenuItem>
-            </Select>
+              id="ProjectType-select"
+              label="InspectedUser"
+              name="InspectedUser"
+              onChange={handleFormChange}
+            ></Select>
           </FormControl>
-          <TextField id="InspectedPersonID" label="受檢人員NotesID" required />
-          <TextField id="Inspector" label="廠(處)主管" required />
-          <TextField id="Inspector" label="經理室" required />
           <TextField
             id="Inspector"
             disabled

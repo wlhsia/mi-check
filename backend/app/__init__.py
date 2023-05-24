@@ -36,14 +36,17 @@ def create_app():
 
     from .resources.auth import Login, Logout
     from .resources.user import CurrentUser, User, UserList
+    from .resources.project import Project, ProjectList
     from .resources.item import Item, ItemList
-    api.add_resource(Login, '/login')
-    api.add_resource(Logout, '/logout')
-    api.add_resource(CurrentUser, '/user')
-    api.add_resource(User, '/users/<user_id>')
-    api.add_resource(UserList, '/users')
-    api.add_resource(Item, '/items/<item_id>')
-    api.add_resource(ItemList, '/items')
+    api.add_resource(Login, '/api/login')
+    api.add_resource(Logout, '/api/logout')
+    api.add_resource(CurrentUser, '/api/user')
+    api.add_resource(User, '/api/users/<user_id>')
+    api.add_resource(UserList, '/api/users')
+    api.add_resource(Project, '/api/projects/<project_id>')
+    api.add_resource(ProjectList, '/api/projects')
+    api.add_resource(Item, '/api/items/<item_id>')
+    api.add_resource(ItemList, '/api/items')
     api.init_app(app)
     
     # with app.app_context():

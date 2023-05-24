@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
-import ProjectDrawer from "./project/ProjectDrawer";
+import ProjectListDrawer from "./project/ProjectListDrawer";
 import CreateProjectModal from "./project/CreateProjectModal";
 
 function TabPanel(props) {
@@ -55,11 +55,11 @@ export default function ProjectPage() {
   return (
     <>
       <Box sx={{ display: "flex" }}>
-        <ProjectDrawer
+        <ProjectListDrawer
           open={drawerOpen}
           toggleDrawer={toggleDrawer}
           toggleModal={toggleModal}
-        ></ProjectDrawer>
+        ></ProjectListDrawer>
         <Box
           component="main"
           sx={{

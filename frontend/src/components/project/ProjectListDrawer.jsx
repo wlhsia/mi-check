@@ -13,6 +13,8 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Button from "@mui/material/Button";
 
+import { context } from "../../App";
+
 const drawerWidth = "20rem";
 
 const Drawer = styled(MuiDrawer, {
@@ -43,7 +45,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function ProjectsDrawer(props) {
   const { open, toggleDrawer, toggleModal } = props;
-
+  const { userData } = React.useContext(context);
   return (
     <Drawer variant="permanent" open={open}>
       <Toolbar
@@ -63,14 +65,18 @@ export default function ProjectsDrawer(props) {
       </Toolbar>
       <Divider />
       <List component="nav">
-        <Link to={`/`}>
-          <ListItemButton>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="PN-20230112-R001" />
-          </ListItemButton>
-        </Link>
+        {userData.Projects.map((project) => {
+          return (
+            <Link to={`/`} key={project.ProjectID}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary={project.ProjectNo} />
+              </ListItemButton>
+            </Link>
+          );
+        })}
       </List>
     </Drawer>
   );

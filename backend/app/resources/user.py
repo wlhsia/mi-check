@@ -22,12 +22,11 @@ class CurrentUser(Resource):
         return user
 
 class User(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self, user_id):
         user = Users.query.filter(Users.UserID==user_id).first()
         return user_schema.dump(user)
-
-    @jwt_required()
+    # @jwt_required()
     def delete(self, user_id):
         user = Users.query.filter(Users.UserID==user_id).first()
         db.session.delete(user)
@@ -35,11 +34,11 @@ class User(Resource):
         return 'success'
 
 class UserList(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         users = Users.query.all()
         return users_schema.dump(users)
-    @jwt_required() 
+    # @jwt_required()
     def post(self):
         user = Users(**request.json)
         db.session.merge(user)
