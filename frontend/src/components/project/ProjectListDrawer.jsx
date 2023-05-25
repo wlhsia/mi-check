@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
 import { styled } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,9 +11,10 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
 
-import { context } from "../../App";
+import CreateProjectModal from "./CreateProjectModal";
 
 const drawerWidth = "20rem";
 
@@ -44,40 +45,66 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function ProjectsDrawer(props) {
-  const { open, toggleDrawer, toggleModal } = props;
-  const { userData } = React.useContext(context);
+  const { open, toggleDrawer } = props;
+  const [user, setUser] = React.useState({
+    Projects: [],
+  });
+
+  const fetchUserData = () => {
+    axios.get("/api/user").then((res) => {
+      setUser(res.data);
+    });
+  };
+
+  React.useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // Modal
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
+
   return (
-    <Drawer variant="permanent" open={open}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          px: [1],
-        }}
-      >
-        <Button variant="contained" onClick={toggleModal}>
-          建立查核案
-        </Button>
-        <IconButton onClick={toggleDrawer}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </Toolbar>
-      <Divider />
-      <List component="nav">
-        {userData.Projects.map((project) => {
-          return (
-            <Link to={`/`} key={project.ProjectID}>
-              <ListItemButton>
+    <>
+      <Drawer variant="permanent" open={open}>
+        <Toolbar
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            px: [1],
+          }}
+        >
+          {open ? (
+            <Button variant="contained" onClick={toggleModal}>
+              建立查核案
+            </Button>
+          ) : null}
+          <IconButton onClick={toggleDrawer}>
+            {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </Toolbar>
+        <Divider />
+        <List component="nav">
+          {user.Projects.map((project) => {
+            return (
+              <ListItemButton key={project.ProjectID}>
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary={project.ProjectNo} />
               </ListItemButton>
-            </Link>
-          );
-        })}
-      </List>
-    </Drawer>
+            );
+          })}
+        </List>
+      </Drawer>
+      <CreateProjectModal
+        open={modalOpen}
+        toggle={toggleModal}
+        fetchUserData={fetchUserData}
+      />
+    </>
   );
 }

@@ -15,11 +15,11 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 
 import { context } from "../App";
 
-const pages = ["查核項目基本資料", "查核案件"];
+const pages = ["查核項目基本資料", "查核案件", "查核&改善彙總"];
 
 export default function ResponsiveAppBar() {
   const navigate = useNavigate();
-  const { userData } = React.useContext(context);
+  const userData = React.useContext(context);
 
   // 登出
   const handleClickLogout = () => {
@@ -39,7 +39,17 @@ export default function ResponsiveAppBar() {
   };
 
   const handleCloseNavMenu = (page) => {
-    page === "查核項目基本資料" ? navigate("/item") : navigate("/project");
+    switch (page) {
+      case "查核項目基本資料":
+        navigate("/item");
+        break;
+      case "查核案件":
+        navigate("/project");
+        break;
+      case "查核&改善彙總":
+        navigate("/summary");
+        break;
+    }
     setAnchorElNav(null);
   };
 
@@ -49,7 +59,7 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar position="static">
-      <Toolbar disableGutters sx={{ px: 2}}>
+      <Toolbar disableGutters sx={{ px: 2 }}>
         <ChecklistIcon sx={{ display: { xs: "none", md: "flex" }, mr: 2 }} />
         <Typography
           variant="h6"

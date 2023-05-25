@@ -36,7 +36,11 @@ class User(Resource):
 class UserList(Resource):
     # @jwt_required()
     def get(self):
-        users = Users.query.all()
+        department_no = request.args['DepartmentNo']
+        if department_no is None:
+            users = Users.query.all()
+        else:
+            users = Users.query.filter(Users.DepartmentNo.ilike(f'%{department_no}%')).all()
         return users_schema.dump(users)
     # @jwt_required()
     def post(self):

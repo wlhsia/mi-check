@@ -11,6 +11,7 @@ import Login from "./Login.jsx";
 import App from "./App.jsx";
 import ItemPage from "./components/ItemPage.jsx";
 import ProjectPage from "./components/ProjectPage.jsx";
+import SummaryPage from "./components/SummaryPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "project/",
         element: <ProjectPage />,
+      },
+      {
+        path: "summary/",
+        element: <SummaryPage />,
       },
     ],
   },

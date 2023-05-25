@@ -6,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
 import ProjectListDrawer from "./project/ProjectListDrawer";
-import CreateProjectModal from "./project/CreateProjectModal";
+import ProjectItems from "./project/ProjectItems";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -34,7 +34,7 @@ TabPanel.propTypes = {
 };
 
 export default function ProjectPage() {
-  // Drawe
+  // Drawer
   const [drawerOpen, setDrawerOpen] = React.useState(true);
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -46,19 +46,12 @@ export default function ProjectPage() {
     setTabValue(newValue);
   };
 
-  //Modal
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
-
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <ProjectListDrawer
           open={drawerOpen}
           toggleDrawer={toggleDrawer}
-          toggleModal={toggleModal}
         ></ProjectListDrawer>
         <Box
           component="main"
@@ -79,16 +72,14 @@ export default function ProjectPage() {
               onChange={handleTabChange}
               aria-label="basic tabs example"
             >
-              <Tab label="查核案設定" />
               <Tab label="查核項目排訂" />
-              <Tab label="查核&改善彙總" />
             </Tabs>
           </Box>
-          <TabPanel value={tabValue} index={0}></TabPanel>
-          <TabPanel value={tabValue} index={1}></TabPanel>
+          <TabPanel value={tabValue} index={0}>
+            <ProjectItems></ProjectItems>
+          </TabPanel>
         </Box>
       </Box>
-      <CreateProjectModal open={modalOpen} toggle={toggleModal} />
     </>
   );
 }

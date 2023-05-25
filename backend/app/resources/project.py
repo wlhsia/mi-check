@@ -20,7 +20,11 @@ class Project(Resource):
 
 class ProjectList(Resource):
     def get(self):
-        projects = Projects.query.all()
+        project_no = request.args['ProjectNo']
+        if project_no is None:
+            projects = Projects.query.all()
+        else:
+            projects = Projects.query.filter(Projects.ProjectNo.ilike(f'{project_no}%')).order_by(Projects.ProjectNo.desc()).all()
         return projects_schema.dump(projects)
     def post(self):
         project = Projects(**request.json)

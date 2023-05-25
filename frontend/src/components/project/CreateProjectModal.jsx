@@ -16,59 +16,96 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
+import { context } from "../../App";
+
 const departments = [
   {
     departmentNo: "H1",
-    department: "ARO1",
+    department: "ARO1廠",
   },
   {
     departmentNo: "H2",
-    department: "ARO2",
+    department: "ARO2廠",
   },
   {
     departmentNo: "H3",
-    department: "ARO3",
+    department: "ARO3廠",
+  },
+  {
+    departmentNo: "30",
+    department: "設保組",
   },
 ];
 
 export default function CreateProjectModal(props) {
-  const { open, toggle } = props;
-
-  const handleSubmit = () => {};
-
-  const [currentUser, setCurrentUser] = React.useState("");
-  React.useEffect(() => {
-    axios.get("/api/user").then((res) => {
-      setCurrentUser(res.data.Name);
-      setProjectTemp;
-    });
-  }, []);
-
+  const { open, toggle, fetchUserData } = props;
+  const userData = React.useContext(context);
+  const [inspectedDepartmentNo, setInspectedDepartmentNo] = React.useState(
+    departments[0].departmentNo
+  );
+  const now = dayjs();
+  const today = now.startOf("day");
+  const [formattedDate, setFormattedDate] = React.useState(
+    today.format("YYYYMMDD")
+  );
+  const [inspectedUsers, setInspectedUsers] = React.useState([]);
   const [projectTemp, setProjectTemp] = React.useState({
-    ProjectNo: `${departments[0].departmentNo}--R`,
+    ProjectNo: "",
     ProjectType: "R",
-    InspectedDepartmentNo: departments[0].departmentNo,
-    InspectedDate: null,
+    InspectorID: userData.UserID,
+    InspectedUserID: 0,
+    InspectedDate: today,
   });
 
-  const handleFormChange = (e) => {
-    setProjectTemp((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setProjectTemp((prev) => ({
-      ...prev,
-      ProjectNo: `${prev.InspectedDepartmentNo}-${prev.InspectedDate}-${prev.ProjectType}`,
-    }));
-  };
+  React.useEffect(() => {
+    axios
+      .get(
+        `api/projects?ProjectNo=${inspectedDepartmentNo}-${formattedDate}-${projectTemp.ProjectType}`
+      )
+      .then((res) => {
+        let index;
+        if (res.data.length == 0) {
+          index = "001";
+        } else {
+          index = (parseInt(res.data[0].ProjectNo.slice(-3)) + 1)
+            .toString()
+            .padStart(3, "0");
+        }
+        setProjectTemp((prev) => ({
+          ...prev,
+          ProjectNo: `${inspectedDepartmentNo}-${formattedDate}-${prev.ProjectType}${index}`,
+        }));
+      });
+  }, [inspectedDepartmentNo, formattedDate, projectTemp.ProjectType]);
 
+  const handleFormChange = (e) => {
+    switch (e.target.name) {
+      case "InspectedDepartmentNo":
+        axios.get(`api/users?DepartmentNo=${e.target.value}`).then((res) => {
+          setInspectedDepartmentNo(e.target.value);
+          setInspectedUsers(res.data);
+        });
+        break;
+      default:
+        setProjectTemp((prev) => ({
+          ...prev,
+          [e.target.name]: e.target.value,
+        }));
+    }
+  };
   const handleDateChange = (newValue) => {
-    const formattedDate = `${newValue.$y}${String(newValue.$M + 1).padStart(
-      2,
-      "0"
-    )}${String(newValue.$D).padStart(2, "0")}`;
+    setFormattedDate(newValue.format("YYYYMMDD"));
     setProjectTemp((prev) => ({
       ...prev,
       InspectedDate: newValue,
-      ProjectNo: `${prev.InspectedDepartmentNo}-${formattedDate}-${prev.ProjectType}`,
     }));
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios.post("/api/projects", projectTemp).then(() => {
+      toggle();
+      fetchUserData();
+    });
   };
 
   return (
@@ -115,7 +152,7 @@ export default function CreateProjectModal(props) {
               label="InspectedDepartmentNo"
               name="InspectedDepartmentNo"
               onChange={handleFormChange}
-              defaultValue={departments[0].departmentNo}
+              value={inspectedDepartmentNo}
             >
               {departments.map((department) => {
                 return (
@@ -123,7 +160,7 @@ export default function CreateProjectModal(props) {
                     key={department.departmentNo}
                     value={department.departmentNo}
                   >
-                    {department.department}廠({department.departmentNo})
+                    {department.department}({department.departmentNo})
                   </MenuItem>
                 );
               })}
@@ -149,7 +186,7 @@ export default function CreateProjectModal(props) {
               label="ProjectType"
               name="ProjectType"
               onChange={handleFormChange}
-              defaultValue={"R"}
+              value={projectTemp.ProjectType}
             >
               <MenuItem value={"R"}>轉機(R)</MenuItem>
               <MenuItem value={"S"}>靜態(S)</MenuItem>
@@ -163,16 +200,24 @@ export default function CreateProjectModal(props) {
             <Select
               id="ProjectType-select"
               label="InspectedUser"
-              name="InspectedUser"
+              name="InspectedUserID"
               onChange={handleFormChange}
-            ></Select>
+            >
+              {inspectedUsers.map((user) => {
+                return (
+                  <MenuItem key={user.UserID} value={user.UserID}>
+                    {user.UserName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           </FormControl>
           <TextField
             id="Inspector"
             disabled
             label="評核人員"
             required
-            defaultValue={currentUser}
+            defaultValue={userData.UserName}
           />
           <Box
             sx={{

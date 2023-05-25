@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
-import Modal from "./Modal";
+import ItemUpdateModal from "./ItemUpdateModal";
 
 export default function ItemList(props) {
   const { itemTypeNo, itemType } = props;
@@ -116,7 +116,7 @@ export default function ItemList(props) {
         }}
         pageSizeOptions={[10]}
       />
-      <Modal
+      <ItemUpdateModal
         open={modalOpen}
         action={modalAction}
         item={item}
