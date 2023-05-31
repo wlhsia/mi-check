@@ -55,6 +55,7 @@ export default function CreateProjectModal(props) {
     InspectorID: userData.UserID,
     InspectedUserID: 0,
     InspectedDate: today,
+    IsScheduled: false,
   });
 
   React.useEffect(() => {

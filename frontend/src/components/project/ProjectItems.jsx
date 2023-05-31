@@ -2,19 +2,14 @@ import * as React from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { DataGrid } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+
+import AddProjectItemsModal from "./AddProjectItemsModal";
 
 export default function ProjectItems(props) {
-  const [rows, setRows] = React.useState([
-    {
-      id: 1,
-      ItemNo: "R01",
-      Item: "8R.0 上次設保組查核缺失複查",
-      StandardNo: "R01-001",
-      Standard: "複查上次文書相關缺失，是否落實改善完成(每項總分扣3分)。",
-      ReferenceScore: null,
-    },
-  ]);
+  const { project } = props;
+  const [rows, setRows] = React.useState([]);
   const columns = [
     { field: "id", headerName: "項次", width: 50 },
     { field: "ItemNo", headerName: "評核項目序號", width: 100 },
@@ -22,10 +17,50 @@ export default function ProjectItems(props) {
     { field: "StandardNo", headerName: "評核標準序號", width: 100 },
     { field: "Standard", headerName: "評核標準", width: 950 },
     { field: "ReferenceScore", headerName: "參考配分", width: 100 },
+    {
+      field: "delete",
+      type: "actions",
+      headerName: "刪除",
+      width: 50,
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            id="delete"
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={() => {
+              const newRows = rows
+                .filter((row) => {
+                  return row.id !== id;
+                })
+                .map((item, index) => {
+                  return { ...item, id: index + 1 };
+                });
+              setRows(newRows);
+            }}
+            color="error"
+          />,
+        ];
+      },
+    },
   ];
+
+  const handleClick = () => {
+    const newRows = rows.map((row) => {
+      return { ...row, ProjectID: project.ProjectID };
+    });
+    axios.post("/api/project_items", newRows);
+  };
+
+  // Modal
+  const [modalOpen, setModelOpen] = React.useState(false);
+  const toggleModal = () => {
+    setModelOpen(!modalOpen);
+  };
+
   return (
     <>
-      <Box sx={{ position: "relative" }}>
+      <Box>
         <DataGrid
           sx={{ backgroundColor: "white", position: "relative" }}
           rows={rows}
@@ -35,23 +70,27 @@ export default function ProjectItems(props) {
           }}
           pageSizeOptions={[10]}
         />
-        <Button
-          sx={{
-            position: "absolute",
-            top: "75%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-          variant="contained"
-        >
-          加入項目
-        </Button>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-        <Button variant="contained" color="success">
-          排訂完成
+        <Button variant="contained" onClick={() => toggleModal()}>
+          加入項目
+        </Button>
+        <Button
+          sx={{ ml: 1 }}
+          variant="contained"
+          color="success"
+          onClick={handleClick}
+        >
+          排定完成
         </Button>
       </Box>
+      <AddProjectItemsModal
+        open={modalOpen}
+        toggle={toggleModal}
+        project={project}
+        projectItemsRows={rows}
+        setProjectItemsRows={setRows}
+      />
     </>
   );
 }

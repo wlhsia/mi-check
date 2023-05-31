@@ -1,49 +1,17 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 
 import ProjectListDrawer from "./project/ProjectListDrawer";
 import ProjectItems from "./project/ProjectItems";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
 export default function ProjectPage() {
+  const [project, setProject] = React.useState({});
+
   // Drawer
   const [drawerOpen, setDrawerOpen] = React.useState(true);
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
-  };
-
-  // Tab
-  const [tabValue, setTabValue] = React.useState(0);
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
   };
 
   return (
@@ -52,6 +20,7 @@ export default function ProjectPage() {
         <ProjectListDrawer
           open={drawerOpen}
           toggleDrawer={toggleDrawer}
+          setProject={setProject}
         ></ProjectListDrawer>
         <Box
           component="main"
@@ -63,21 +32,26 @@ export default function ProjectPage() {
             flexGrow: 1,
             height: "90vh",
             overflow: "auto",
+            p: 3,
           }}
         >
-          <Typography></Typography>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              aria-label="basic tabs example"
-            >
-              <Tab label="查核項目排訂" />
-            </Tabs>
-          </Box>
-          <TabPanel value={tabValue} index={0}>
-            <ProjectItems></ProjectItems>
-          </TabPanel>
+          {project.ProjectID ? (
+            <>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              >
+                <Typography sx={{ display: "inline" }}>經理室：</Typography>
+                <Typography sx={{ display: "inline" }}>主管：</Typography>
+                <Typography sx={{ display: "inline" }}>
+                  受檢人員：{project.InspectedUser.UserName}
+                </Typography>
+                <Typography sx={{ display: "inline" }}>
+                  查核人員：{project.Inspector.UserName}
+                </Typography>
+              </Box>
+              <ProjectItems project={project}></ProjectItems>
+            </>
+          ) : null}
         </Box>
       </Box>
     </>

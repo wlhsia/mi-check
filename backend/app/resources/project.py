@@ -5,7 +5,7 @@ from app import db
 from ..models import *
 from ..schemas import *
 
-project_schema = ProjectSchema()
+project_schema = ProjectSchema(unknown='exclude')
 projects_schema = ProjectSchema(many=True)
 
 class Project(Resource):
@@ -27,7 +27,8 @@ class ProjectList(Resource):
             projects = Projects.query.filter(Projects.ProjectNo.ilike(f'{project_no}%')).order_by(Projects.ProjectNo.desc()).all()
         return projects_schema.dump(projects)
     def post(self):
-        project = Projects(**request.json)
+        loaded_project = project_schema.load(request.json)
+        project = Projects(**loaded_project)
         db.session.merge(project)
         db.session.commit()
         return 'success'

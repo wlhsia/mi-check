@@ -7,7 +7,7 @@ from ..models import *
 from ..schemas import *
 
 
-item_schema = ItemSchema()
+item_schema = ItemSchema(unknown='exclude')
 items_schema = ItemSchema(many=True)
 
 class Item(Resource):
@@ -33,7 +33,9 @@ class ItemList(Resource):
         return items_schema.dump(items)
     # @jwt_required()
     def post(self):
-        item = Items(**request.json)
+        print(request.json)
+        loaded_item = item_schema.load(request.json)
+        item = Items(**loaded_item)
         db.session.merge(item)
         db.session.commit()
         return 'success'

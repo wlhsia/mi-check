@@ -16,7 +16,6 @@ export default function Md(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    delete item.id;
     axios.post("/api/items", item).then(() => {
       handleClose();
     });

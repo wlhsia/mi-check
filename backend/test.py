@@ -8,6 +8,5 @@ try:
     access_token = create_access_token(identity=username)
     set_access_cookies(response, access_token)
     print('T')
-except:
-    print('F')
-    return jsonify({"msg": "Bad username or password"}), 401
+except Exception as e:
+    print(e)

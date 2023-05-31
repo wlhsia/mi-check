@@ -38,6 +38,7 @@ def create_app():
     from .resources.user import CurrentUser, User, UserList
     from .resources.project import Project, ProjectList
     from .resources.item import Item, ItemList
+    from .resources.project_item import ProjectItemList
     api.add_resource(Login, '/api/login')
     api.add_resource(Logout, '/api/logout')
     api.add_resource(CurrentUser, '/api/user')
@@ -47,6 +48,7 @@ def create_app():
     api.add_resource(ProjectList, '/api/projects')
     api.add_resource(Item, '/api/items/<item_id>')
     api.add_resource(ItemList, '/api/items')
+    api.add_resource(ProjectItemList, '/api/project_items')
     api.init_app(app)
     
     # with app.app_context():

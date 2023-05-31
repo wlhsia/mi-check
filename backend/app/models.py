@@ -16,6 +16,7 @@ class Projects(db.Model):
     InspectorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedUserID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedDate = db.Column(db.DateTime)
+    IsScheduled = db.Column(db.Boolean)
 
     Inspector = db.relationship("Users", foreign_keys=[InspectorID],  backref="Projects")
     InspectedUser = db.relationship("Users", foreign_keys=[InspectedUserID], backref="InspectedProjects")
@@ -32,14 +33,16 @@ class Items(db.Model):
 class ProjectItems(db.Model):
     __tablename__ = 'ProjectItems'
     ProjectItemID = db.Column(db.Integer, primary_key=True)
-    ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID), primary_key=True)
-    ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID), primary_key=True)
-    Index = db.Column(db.Integer, primary_key=True)
+    ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID))
+    ItemID = db.Column(db.Integer, db.ForeignKey(Items.ItemID))
     ReferenceScore = db.Column(db.Float)
-    CheckDescription = db.Column(db.Unicode)
-    CheckClass = db.Column(db.Unicode)
-    DangerClass = db.Column(db.String)
-    CheckPhoto = db.Column(db.String)
-    Score = db.Column(db.Float)
+    # Index = db.Column(db.Integer)
+    # ReferenceScore = db.Column(db.Float)
+    # CheckDescription = db.Column(db.Unicode)
+    # CheckClass = db.Column(db.Unicode)
+    # DangerClass = db.Column(db.String)
+    # CheckPhoto = db.Column(db.String)
+    # Score = db.Column(db.Float)
 
-    Project = db.relationship("Projects", foreign_keys=[ProjectID],  backref="Items")
+    ProjectDetail = db.relationship("Projects", foreign_keys=[ProjectID],  backref="Items")
+    ItemDetail = db.relationship("Items", foreign_keys=[ItemID],  backref="Projects")

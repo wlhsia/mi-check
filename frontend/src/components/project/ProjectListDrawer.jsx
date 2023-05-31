@@ -45,7 +45,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function ProjectsDrawer(props) {
-  const { open, toggleDrawer } = props;
+  const { open, toggleDrawer, setProject } = props;
   const [user, setUser] = React.useState({
     Projects: [],
   });
@@ -90,7 +90,11 @@ export default function ProjectsDrawer(props) {
         <List component="nav">
           {user.Projects.map((project) => {
             return (
-              <ListItemButton key={project.ProjectID}>
+              <ListItemButton
+                // sx={{ bgcolor: "text.disabled" }}
+                key={project.ProjectID}
+                onClick={() => setProject(project)}
+              >
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
