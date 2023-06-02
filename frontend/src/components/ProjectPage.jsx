@@ -49,7 +49,7 @@ export default function ProjectPage() {
                   查核人員：{project.Inspector.UserName}
                 </Typography>
               </Box>
-              <ProjectItems project={project}></ProjectItems>
+              <ProjectItems project={project} setProject={setProject}></ProjectItems>
             </>
           ) : null}
         </Box>

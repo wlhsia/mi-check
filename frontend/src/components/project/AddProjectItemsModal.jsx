@@ -31,10 +31,15 @@ export default function AddProjectItemsModal(props) {
     const rowsTemp = rows.filter((item) => {
       return rowSelectionModel.includes(item.id);
     });
-    const newRows = [...projectItemsRows, ...rowsTemp].map((item, index) => {
-      return { ...item, id: index + 1 };
+    // const newRows = [...projectItemsRows, ...rowsTemp].map((item, index) => {
+    //   return { ...item, id: index + 1 };
+    // });
+    setProjectItemsRows((prev) => {
+      return [...prev, ...rowsTemp].map((item, index) => {
+        return { ...item, id: index + 1 };
+      });
     });
-    setProjectItemsRows(newRows);
+    // setProjectItemsRows(newRows);
     toggle();
   };
 

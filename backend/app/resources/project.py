@@ -12,6 +12,12 @@ class Project(Resource):
     def get(self, project_id):
         project = Projects.query.filter(Projects.ProjectID==project_id).first()
         return project_schema.dump(project)
+    def put(self, project_id):
+        loaded_project = project_schema.load(request.json)
+        project = Projects(**loaded_project)
+        db.session.merge(project)
+        db.session.commit()
+        return project_schema.dump(project)
     def delete(self, project_id):
         project = Projects.query.filter(Projects.ProjectID==project_id).first()
         db.session.delete(project)
