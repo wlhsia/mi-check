@@ -19,8 +19,10 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Users
+        include_fk = True
     Projects = ma.Nested(ProjectSchema, many=True)
     InspectedProjects = ma.Nested(ProjectSchema, many=True)
+    Supervisor = ma.Nested('self', exclude=('Supervisor',))
 
 class ItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

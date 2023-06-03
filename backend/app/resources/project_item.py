@@ -10,6 +10,15 @@ from ..schemas import *
 project_item_schema = ProjectItemSchema(unknown='exclude')
 project_items_schema = ProjectItemSchema(many=True)
 
+class ProjectItem(Resource):
+    def get(self, project_item_id):
+        project_item = ProjectItems.query.filter(ProjectItems.ProjectItemID==project_item_id).first()
+        return project_item_schema.dump(project_item)
+    def delete(self, project_item_id):
+        project_item = ProjectItems.query.filter(ProjectItems.ProjectItemID==project_item_id).first()
+        db.session.delete(project_item)
+        db.session.commit()
+        return 'success'
 
 class ProjectItemList(Resource):
     # @jwt_required()

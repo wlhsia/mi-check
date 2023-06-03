@@ -25,11 +25,11 @@ class Item(Resource):
 class ItemList(Resource):
     # @jwt_required()
     def get(self):
-        item_type = request.args['itemType']
-        if item_type is None:
+        item_type_no = request.args['itemTypeNo']
+        if item_type_no is None:
             items = Items.query.all()
         else:
-            items = Items.query.filter(Items.ItemType==item_type).all()
+            items = Items.query.filter(Items.ItemTypeNo==item_type_no).all()
         return items_schema.dump(items)
     # @jwt_required()
     def post(self):

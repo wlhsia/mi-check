@@ -6,13 +6,15 @@ import Toolbar from "@mui/material/Toolbar";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
+
+import { Context } from "../../App";
 
 import CreateProjectModal from "./CreateProjectModal";
 
@@ -44,22 +46,10 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+
 export default function ProjectsDrawer(props) {
-  const { open, toggleDrawer, setProject } = props;
-  const [user, setUser] = React.useState({
-    Projects: [],
-  });
-
-  const fetchUserData = () => {
-    axios.get("/api/user").then((res) => {
-      setUser(res.data);
-    });
-  };
-
-  React.useEffect(() => {
-    fetchUserData();
-  }, []);
-
+  const { userData } = React.useContext(Context);
+  const { open, toggleDrawer, project, setProject } = props;
   // Modal
   const [modalOpen, setModalOpen] = React.useState(false);
   const toggleModal = () => {
@@ -88,26 +78,39 @@ export default function ProjectsDrawer(props) {
         </Toolbar>
         <Divider />
         <List component="nav">
-          {user.Projects.map((project) => {
-            return (
-              <ListItemButton
-                // sx={{ bgcolor: "text.disabled" }}
-                key={project.ProjectID}
-                onClick={() => setProject(project)}
-              >
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary={project.ProjectNo} />
-              </ListItemButton>
-            );
+          {Object.keys(userData).length === 0 ? null : userData.Projects.map((p) => {
+            if (p.ProjectID === project.ProjectID) {
+              return (
+                <ListItemButton
+                  selected
+                  key={p.ProjectID}
+                  onClick={() => setProject(p)}
+                >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={p.ProjectNo} />
+                </ListItemButton>
+              );
+            } else {
+              return (
+                <ListItemButton
+                  key={p.ProjectID}
+                  onClick={() => setProject(p)}
+                >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={p.ProjectNo} />
+                </ListItemButton>
+              );
+            }
           })}
         </List>
       </Drawer>
       <CreateProjectModal
         open={modalOpen}
         toggle={toggleModal}
-        fetchUserData={fetchUserData}
       />
     </>
   );

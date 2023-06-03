@@ -13,14 +13,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 
-import { context } from "../App";
+import { Context } from '../App';
 
 const pages = ["查核項目基本資料", "查核案件", "查核&改善彙總"];
 
 export default function ResponsiveAppBar() {
+  const { userData } = React.useContext(Context);
   const navigate = useNavigate();
-  const userData = React.useContext(context);
-
+  
   // 登出
   const handleClickLogout = () => {
     axios.get("/api/logout").then(() => {

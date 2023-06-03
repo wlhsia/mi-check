@@ -2,10 +2,12 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+import { Context } from '../App';
+
 import ProjectListDrawer from "./project/ProjectListDrawer";
 import ProjectItems from "./project/ProjectItems";
 
-export default function ProjectPage() {
+export default function ProjectPage(props) {
   const [project, setProject] = React.useState({});
 
   // Drawer
@@ -20,8 +22,9 @@ export default function ProjectPage() {
         <ProjectListDrawer
           open={drawerOpen}
           toggleDrawer={toggleDrawer}
+          project={project}
           setProject={setProject}
-        ></ProjectListDrawer>
+        />
         <Box
           component="main"
           sx={{
@@ -41,7 +44,7 @@ export default function ProjectPage() {
                 sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
               >
                 <Typography sx={{ display: "inline" }}>經理室：</Typography>
-                <Typography sx={{ display: "inline" }}>主管：</Typography>
+                <Typography sx={{ display: "inline" }}>主管： {project.InspectedUser.Supervisor.UserName}</Typography>
                 <Typography sx={{ display: "inline" }}>
                   受檢人員：{project.InspectedUser.UserName}
                 </Typography>

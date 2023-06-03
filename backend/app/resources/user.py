@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from flask_restful import Resource
+from flask_restful import Resource,reqparse
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 
@@ -36,11 +36,13 @@ class User(Resource):
 class UserList(Resource):
     # @jwt_required()
     def get(self):
-        department_no = request.args['DepartmentNo']
-        if department_no is None:
-            users = Users.query.all()
+        parser = reqparse.RequestParser()
+        parser.add_argument('DepartmentNo', type=str, default=None, location='args')
+        args = parser.parse_args()
+        if args['DepartmentNo']:
+            users = Users.query.filter(Users.DepartmentNo.ilike(f"%{args['DepartmentNo']}%")).all()
         else:
-            users = Users.query.filter(Users.DepartmentNo.ilike(f'%{department_no}%')).all()
+            users = Users.query.all()
         return users_schema.dump(users)
     # @jwt_required()
     def post(self):

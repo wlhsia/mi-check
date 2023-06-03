@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -29,7 +30,12 @@ const departments = [
   },
 ];
 
-export default function ProjectPage() {
+export default function SummaryPage() {
+  const [userData, setUserData] = React.useState({});
+  React.useEffect(() => {
+    axios.get("/api/user").then((res) => { setUserData(res.data); })
+  }, [])
+
   return (
     <>
       <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>

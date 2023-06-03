@@ -16,52 +16,59 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-import { context } from "../../App";
+import { Context } from "../../App"
 
 const departments = [
   {
     departmentNo: "H1",
-    department: "ARO1廠",
+    department: "ARO1"
   },
   {
     departmentNo: "H2",
-    department: "ARO2廠",
+    department: "ARO2"
   },
   {
     departmentNo: "H3",
-    department: "ARO3廠",
+    department: "ARO3"
   },
   {
     departmentNo: "30",
-    department: "設保組",
+    department: "設保組"
   },
-];
+]
 
 export default function CreateProjectModal(props) {
-  const { open, toggle, fetchUserData } = props;
-  const userData = React.useContext(context);
-  const [inspectedDepartmentNo, setInspectedDepartmentNo] = React.useState(
-    departments[0].departmentNo
-  );
+  const { userData, fetchUserData } = React.useContext(Context);
+  console.log(userData)
+  const { open, toggle } = props;
+  const [inspectedDepartmentNo, setInspectedDepartmentNo] = React.useState(departments[0].departmentNo);
   const now = dayjs();
-  const today = now.startOf("day");
+  const today = now.startOf("day")
   const [formattedDate, setFormattedDate] = React.useState(
     today.format("YYYYMMDD")
   );
   const [inspectedUsers, setInspectedUsers] = React.useState([]);
   const [projectTemp, setProjectTemp] = React.useState({
     ProjectNo: "",
-    ProjectType: "R",
-    InspectorID: userData.UserID,
+    ProjectTypeNo: "R",
+    ProjectType: "轉機",
+    InspectorID: "",
     InspectedUserID: 0,
     InspectedDate: today,
     IsScheduled: false,
   });
 
   React.useEffect(() => {
+    setProjectTemp(prev => ({
+      ...prev,
+      InspectorID: userData.UserID
+    }));
+  }, [userData.UserID]);
+
+  React.useEffect(() => {
     axios
       .get(
-        `api/projects?ProjectNo=${inspectedDepartmentNo}-${formattedDate}-${projectTemp.ProjectType}`
+        `api/projects?ProjectNo=${inspectedDepartmentNo}-${formattedDate}-${projectTemp.ProjectTypeNo}`
       )
       .then((res) => {
         let index;
@@ -74,10 +81,10 @@ export default function CreateProjectModal(props) {
         }
         setProjectTemp((prev) => ({
           ...prev,
-          ProjectNo: `${inspectedDepartmentNo}-${formattedDate}-${prev.ProjectType}${index}`,
+          ProjectNo: `${inspectedDepartmentNo}-${formattedDate}-${prev.ProjectTypeNo}${index}`,
         }));
       });
-  }, [inspectedDepartmentNo, formattedDate, projectTemp.ProjectType]);
+  }, [inspectedDepartmentNo, formattedDate, projectTemp.ProjectTypeNo]);
 
   const handleFormChange = (e) => {
     switch (e.target.name) {
@@ -87,6 +94,17 @@ export default function CreateProjectModal(props) {
           setInspectedUsers(res.data);
         });
         break;
+      case "ProjectTypeNo":
+        const typeMap = {
+          R: "轉機",
+          S: "靜態",
+          E: "電儀"
+        }
+        setProjectTemp((prev) => ({
+          ...prev,
+          ProjectTypeNo: e.target.value,
+          ProjectType: typeMap[e.target.value],
+        }));
       default:
         setProjectTemp((prev) => ({
           ...prev,
@@ -94,6 +112,7 @@ export default function CreateProjectModal(props) {
         }));
     }
   };
+
   const handleDateChange = (newValue) => {
     setFormattedDate(newValue.format("YYYYMMDD"));
     setProjectTemp((prev) => ({
@@ -105,7 +124,7 @@ export default function CreateProjectModal(props) {
     event.preventDefault();
     axios.post("/api/projects", projectTemp).then(() => {
       toggle();
-      fetchUserData();
+      fetchUserData()
     });
   };
 
@@ -117,7 +136,7 @@ export default function CreateProjectModal(props) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 600,
+          width: "45%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
@@ -184,10 +203,10 @@ export default function CreateProjectModal(props) {
             </InputLabel>
             <Select
               id="ProjectType-select"
-              label="ProjectType"
-              name="ProjectType"
+              label="ProjectTypeNo"
+              name="ProjectTypeNo"
               onChange={handleFormChange}
-              value={projectTemp.ProjectType}
+              value={projectTemp.ProjectTypeNo}
             >
               <MenuItem value={"R"}>轉機(R)</MenuItem>
               <MenuItem value={"S"}>靜態(S)</MenuItem>

@@ -4,9 +4,7 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-// import Modal from "@mui/material/Modal";
-// import TextField from "@mui/material/TextField";
-// import Button from "@mui/material/Button";
+
 
 import ItemList from "./item/ItemList";
 
@@ -21,7 +19,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Box>{children}</Box>
         </Box>
       )}
     </div>
@@ -29,6 +27,7 @@ function TabPanel(props) {
 }
 
 export default function ItemPage() {
+
   // Tab
   const [tabValue, setTabValue] = React.useState(0);
   const handleTabChange = (event, newValue) => {
@@ -54,13 +53,13 @@ export default function ItemPage() {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <ItemList itemType="E" />
+          <ItemList itemTypeNo="E" itemType="電儀" />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <ItemList itemType="R" />
+          <ItemList itemTypeNo="R" itemType="轉機" />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <ItemList itemType="S" />
+          <ItemList itemTypeNo="S" itemType="靜態" />
         </TabPanel>
       </Box>
     </Container>

@@ -5,31 +5,29 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import AppBar from "./components/AppBar.jsx";
 
-export const context = React.createContext();
+export const Context = React.createContext();
 
 export default function App() {
   const navigate = useNavigate();
-  // 登入使用者
-  const [userData, setUserData] = React.useState({});
 
+  const [userData, setUserData] = React.useState({})
   React.useEffect(() => {
-    axios
-      .get("/api/user")
-      .then((res) => {
-        setUserData(res.data);
-      })
-      .catch(() => {
-        navigate("/login");
-      });
+    fetchUserData()
   }, []);
 
+  const fetchUserData = () => {
+    axios.get("/api/user").then((res) => {
+      setUserData(res.data);
+    }).catch((err) => {
+      navigate("/login");
+    });
+  }
+
   return (
-    <>
-      <context.Provider value={userData}>
-        <CssBaseline />
-        <AppBar />
-        <Outlet />
-      </context.Provider>
-    </>
+    <Context.Provider value={{ userData, fetchUserData }}>
+      <CssBaseline />
+      <AppBar />
+      <Outlet />
+    </Context.Provider>
   );
 }

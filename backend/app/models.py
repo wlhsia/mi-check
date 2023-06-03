@@ -6,13 +6,18 @@ class Users(db.Model):
     NotesID = db.Column(db.String)
     UserName = db.Column(db.Unicode)
     DepartmentNo = db.Column(db.String)
+    Department = db.Column(db.String)
+    SupervisorID = db.Column(db.Integer, db.ForeignKey(UserID))
     IsAdmin = db.Column(db.Boolean)
+
+    Supervisor = db.relationship('Users', remote_side=[UserID])
 
 class Projects(db.Model):
     __tablename__ = 'Projects'
     ProjectID = db.Column(db.Integer, primary_key=True)
     ProjectNo = db.Column(db.String)
-    ProjectType = db.Column(db.String)
+    ProjectTypeNo = db.Column(db.String)
+    ProjectType = db.Column(db.Unicode)
     InspectorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedUserID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedDate = db.Column(db.DateTime)
@@ -24,6 +29,7 @@ class Projects(db.Model):
 class Items(db.Model):
     __tablename__ = 'Items'
     ItemID = db.Column(db.Integer, primary_key=True)
+    ItemTypeNo = db.Column(db.String)
     ItemType = db.Column(db.Unicode)
     ItemNo = db.Column(db.String)
     Item = db.Column(db.Unicode)
@@ -44,5 +50,5 @@ class ProjectItems(db.Model):
     # CheckPhoto = db.Column(db.String)
     # Score = db.Column(db.Float)
 
-    ProjectDetail = db.relationship("Projects", foreign_keys=[ProjectID],  backref="Items")
+    ProjectDetail = db.relationship("Projects", foreign_keys=[ProjectID],  backref="ProjectItems")
     ItemDetail = db.relationship("Items", foreign_keys=[ItemID],  backref="Projects")

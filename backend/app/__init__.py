@@ -5,6 +5,8 @@ from flask_restful import  Api
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import set_access_cookies
 from datetime import datetime, timedelta, timezone
  
 from config import Config
@@ -26,7 +28,7 @@ def create_app():
         try:
             exp_timestamp = get_jwt()["exp"]
             now = datetime.now(timezone.utc)
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            target_timestamp = datetime.timestamp(now + timedelta(hours=2))
             if target_timestamp > exp_timestamp:
                 access_token = create_access_token(identity=get_jwt_identity())
                 set_access_cookies(response, access_token)

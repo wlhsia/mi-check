@@ -5,65 +5,68 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
+import { Context } from "../../App";
 import AddProjectItemsModal from "./AddProjectItemsModal";
 
 export default function ProjectItems(props) {
+  const { fetchUserData } = React.useContext(Context);
   const { project, setProject } = props;
   const [rows, setRows] = React.useState([]);
-  const columns = [
-    { field: "id", headerName: "項次", width: 50 },
-    { field: "ItemNo", headerName: "評核項目序號", width: 100 },
-    { field: "Item", headerName: "評核項目", width: 100 },
-    { field: "StandardNo", headerName: "評核標準序號", width: 100 },
-    { field: "Standard", headerName: "評核標準", width: 950 },
+  let columns = [
+    { field: "id", headerName: "項次", flex: 1 },
+    { field: "ItemNo", headerName: "評核項目序號", flex: 1.5 },
+    { field: "Item", headerName: "評核項目", flex: 3 },
+    { field: "StandardNo", headerName: "評核標準序號", flex: 1.5 },
+    { field: "Standard", headerName: "評核標準", flex: 8 },
     {
       field: "ReferenceScore",
       headerName: "參考配分",
-      width: 100,
+      flex: 1,
       type: "number",
       editable: true,
     },
-    {
-      field: "delete",
-      type: "actions",
-      headerName: "刪除",
-      width: 50,
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            id="delete"
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={() => {
-              const newRows = rows
-                .filter((row) => {
-                  return row.id !== id;
-                })
-                .map((item, index) => {
-                  return { ...item, id: index + 1 };
-                });
-              setRows(newRows);
-            }}
-            color="error"
-          />,
-        ];
-      },
-    },
-  ];
 
-  const handleScheduleClick = () => {
+  ];
+  columns = project.IsScheduled ? columns : [...columns, {
+    field: "delete",
+    type: "actions",
+    headerName: "刪除",
+    flex: 1,
+    getActions: ({ id }) => {
+      return [
+        <GridActionsCellItem
+          id="delete"
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => {
+            const newRows = rows
+              .filter((row) => {
+                return row.id !== id;
+              })
+              .map((item, index) => {
+                return { ...item, id: index + 1 };
+              });
+            setRows(newRows);
+          }}
+          color="error"
+        />,
+      ];
+    },
+  }]
+
+  const handleScheduleClick = async () => {
     const newRows = rows.map((row) => {
       return { ...row, ProjectID: project.ProjectID };
     });
-    axios.post("/api/project_items", newRows);
-    axios
+    await axios.post("/api/project_items", newRows);
+    await axios
       .put(`/api/projects/${project.ProjectID}`, {
         ProjectID: project.ProjectID,
         IsScheduled: true,
       })
-      .then((res) => {
-        setProject(res.data);
-      });
+    const res = await axios.get(`/api/projects/${project.ProjectID}`)
+    setProject(res.data);
+    fetchUserData()
   };
 
   const processRowUpdate = (newRow) => {
@@ -117,22 +120,22 @@ export default function ProjectItems(props) {
             color="success"
             onClick={handleScheduleClick}
           >
-            排定完成
+            匯出csv
           </Button>
         ) : (
-          <>
-            <Button variant="contained" onClick={() => toggleModal()}>
-              加入項目
-            </Button>
-            <Button
-              sx={{ ml: 1 }}
-              variant="contained"
-              color="success"
-              onClick={handleScheduleClick}
-            >
-              排定完成
-            </Button>
-          </>
+        <>
+          <Button variant="contained" onClick={() => toggleModal()}>
+            加入項目
+          </Button>
+          <Button
+            sx={{ ml: 1 }}
+            variant="contained"
+            color="success"
+            onClick={handleScheduleClick}
+          >
+            排定完成
+          </Button>
+        </>
         )}
       </Box>
       <AddProjectItemsModal

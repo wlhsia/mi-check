@@ -10,15 +10,15 @@ export default function AddProjectItemsModal(props) {
     props;
   const [rows, setRows] = React.useState([]);
   const columns = [
-    { field: "id", headerName: "項次", width: 50 },
-    { field: "ItemNo", headerName: "評核項目序號", width: 100 },
-    { field: "Item", headerName: "評核項目", width: 100 },
-    { field: "StandardNo", headerName: "評核標準序號", width: 100 },
-    { field: "Standard", headerName: "評核標準", width: 950 },
+    { field: "id", headerName: "項次", flex: 1 },
+    { field: "ItemNo", headerName: "評核項目序號", flex: 1.5},
+    { field: "Item", headerName: "評核項目", flex: 3},
+    { field: "StandardNo", headerName: "評核標準序號", flex: 1.5},
+    { field: "Standard", headerName: "評核標準", flex: 10 },
   ];
 
   React.useEffect(() => {
-    axios.get(`/api/items?itemType=${project.ProjectType}`).then((res) => {
+    axios.get(`/api/items?itemTypeNo=${project.ProjectTypeNo}`).then((res) => {
       const rows = res.data.map((item, index) => {
         return { ...item, id: index + 1 };
       });
@@ -31,15 +31,11 @@ export default function AddProjectItemsModal(props) {
     const rowsTemp = rows.filter((item) => {
       return rowSelectionModel.includes(item.id);
     });
-    // const newRows = [...projectItemsRows, ...rowsTemp].map((item, index) => {
-    //   return { ...item, id: index + 1 };
-    // });
     setProjectItemsRows((prev) => {
       return [...prev, ...rowsTemp].map((item, index) => {
         return { ...item, id: index + 1 };
       });
     });
-    // setProjectItemsRows(newRows);
     toggle();
   };
 
@@ -51,7 +47,7 @@ export default function AddProjectItemsModal(props) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 1500,
+          width: "95%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,

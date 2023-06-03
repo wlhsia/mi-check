@@ -17,17 +17,17 @@ export default function ItemList(props) {
   const [item, setItem] = React.useState({});
   const handleModalClose = () => {
     setModalOpen(false);
-    fetchRows(itemType);
+    fetchRows(itemTypeNo);
   };
 
   // Datagrid
   const [rows, setRows] = React.useState([]);
   React.useEffect(() => {
-    fetchRows(itemType);
+    fetchRows(itemTypeNo);
   }, []);
 
-  const fetchRows = (itemType) => {
-    axios.get(`/api/items?itemType=${itemType}`).then((response) => {
+  const fetchRows = (itemTypeNo) => {
+    axios.get(`/api/items?itemTypeNo=${itemTypeNo}`).then((response) => {
       const rows = response.data.map((item, index) => {
         return { ...item, id: index + 1 };
       });
@@ -36,16 +36,16 @@ export default function ItemList(props) {
   };
 
   const columns = [
-    { field: "id", headerName: "項次", width: 50 },
-    { field: "ItemNo", headerName: "評核項目序號", width: 100 },
-    { field: "Item", headerName: "評核項目", width: 100 },
-    { field: "StandardNo", headerName: "評核標準序號", width: 100 },
-    { field: "Standard", headerName: "評核標準", width: 950 },
+    { field: "id", headerName: "項次", flex: 1 },
+    { field: "ItemNo", headerName: "評核項目序號", flex: 1.5 },
+    { field: "Item", headerName: "評核項目", flex: 3 },
+    { field: "StandardNo", headerName: "評核標準序號", flex: 1.5 },
+    { field: "Standard", headerName: "評核標準", flex: 10 },
     {
       field: "edit",
       type: "actions",
       headerName: "編輯",
-      width: 50,
+      flex: 1,
       getActions: ({ row }) => {
         return [
           <GridActionsCellItem
@@ -61,7 +61,7 @@ export default function ItemList(props) {
       field: "delete",
       type: "actions",
       headerName: "刪除",
-      width: 50,
+      flex: 1,
       getActions: ({ row }) => {
         return [
           <GridActionsCellItem
