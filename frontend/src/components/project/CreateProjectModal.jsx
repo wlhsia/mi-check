@@ -16,34 +16,36 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-import { Context } from "../../App"
+import { Context } from "../../App";
 
 const departments = [
   {
     departmentNo: "H1",
-    department: "ARO1"
+    department: "ARO1",
   },
   {
     departmentNo: "H2",
-    department: "ARO2"
+    department: "ARO2",
   },
   {
     departmentNo: "H3",
-    department: "ARO3"
+    department: "ARO3",
   },
   {
     departmentNo: "30",
-    department: "設保組"
+    department: "設保組",
   },
-]
+];
 
 export default function CreateProjectModal(props) {
   const { userData, fetchUserData } = React.useContext(Context);
-  console.log(userData)
+  console.log(userData);
   const { open, toggle } = props;
-  const [inspectedDepartmentNo, setInspectedDepartmentNo] = React.useState(departments[0].departmentNo);
+  const [inspectedDepartmentNo, setInspectedDepartmentNo] = React.useState(
+    departments[0].departmentNo
+  );
   const now = dayjs();
-  const today = now.startOf("day")
+  const today = now.startOf("day");
   const [formattedDate, setFormattedDate] = React.useState(
     today.format("YYYYMMDD")
   );
@@ -59,9 +61,9 @@ export default function CreateProjectModal(props) {
   });
 
   React.useEffect(() => {
-    setProjectTemp(prev => ({
+    setProjectTemp((prev) => ({
       ...prev,
-      InspectorID: userData.UserID
+      InspectorID: userData.UserID,
     }));
   }, [userData.UserID]);
 
@@ -98,8 +100,8 @@ export default function CreateProjectModal(props) {
         const typeMap = {
           R: "轉機",
           S: "靜態",
-          E: "電儀"
-        }
+          E: "電儀",
+        };
         setProjectTemp((prev) => ({
           ...prev,
           ProjectTypeNo: e.target.value,
@@ -124,7 +126,7 @@ export default function CreateProjectModal(props) {
     event.preventDefault();
     axios.post("/api/projects", projectTemp).then(() => {
       toggle();
-      fetchUserData()
+      fetchUserData();
     });
   };
 

@@ -6,10 +6,14 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import { Context } from "../App";
+import SummaryDatagrid from "./summary/SummaryDatagrid";
 
 const departments = [
   {
@@ -31,18 +35,58 @@ const departments = [
 ];
 
 export default function SummaryPage() {
-  const [userData, setUserData] = React.useState({});
+  const { userData } = React.useContext(Context);
+  const now = dayjs();
+  const today = now.startOf("day");
+  const [projectTypeNo, setProjectTypeNo] = React.useState("E");
+  const [departmentNo, setDepartmentNo] = React.useState("H1");
+  const [inspectedDate, setInspectedDate] = React.useState(today);
+
+  const [projectItems, setProjectItems] = React.useState([]);
+
   React.useEffect(() => {
-    axios.get("/api/user").then((res) => { setUserData(res.data); })
-  }, [])
+    setProjectItems([]);
+    if (Object.keys(userData).length !== 0) {
+      const project = userData.Projects.find((project) => {
+        return (
+          project.ProjectNo ===
+          `${departmentNo}-${inspectedDate.format(
+            "YYYYMMDD"
+          )}-${projectTypeNo}001`
+        );
+      });
+      if (project !== undefined) {
+        axios.get(`/api/projects/${project.ProjectID}`).then((res) => {
+          setProjectItems(res.data.ProjectItems);
+        });
+      }
+    }
+  }, [projectTypeNo, departmentNo, inspectedDate]);
+
+  const handleTypeChange = (e) => {
+    setProjectTypeNo(e.target.value);
+  };
+
+  const handleDepartmentChange = (e) => {
+    setDepartmentNo(e.target.value);
+  };
+
+  const handleDateChange = (newValue) => {
+    setInspectedDate(newValue);
+  };
 
   return (
     <>
-      <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ "& .MuiFormControl-root": { marginRight: 2 } }}>
+      <Box sx={{ my: 2, display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ "& .MuiFormControl-root": { ml: 2 } }}>
           <FormControl sx={{ minWidth: 150 }}>
             <InputLabel htmlFor="grouped-native-select">機能組</InputLabel>
-            <Select defaultValue="E" id="grouped-native-select" label="機能組">
+            <Select
+              value={projectTypeNo}
+              id="grouped-native-select"
+              label="機能組"
+              onChange={handleTypeChange}
+            >
               <MenuItem value="E">電儀(E)</MenuItem>
               <MenuItem value="R">轉機(R)</MenuItem>
               <MenuItem value="S">靜態(S)</MenuItem>
@@ -51,9 +95,10 @@ export default function SummaryPage() {
           <FormControl sx={{ minWidth: 150 }}>
             <InputLabel htmlFor="grouped-native-select">受檢單位</InputLabel>
             <Select
-              defaultValue={departments.No}
+              value={departmentNo}
               id="grouped-native-select"
               label="受檢單位"
+              onChange={handleDepartmentChange}
             >
               {departments.map((department) => {
                 return (
@@ -74,10 +119,13 @@ export default function SummaryPage() {
             <DatePicker
               label="受檢日期"
               name="InspectedDate"
+              value={inspectedDate}
+              onChange={handleDateChange}
             />
           </LocalizationProvider>
         </Box>
       </Box>
+      <SummaryDatagrid projectItems={projectItems} />
     </>
   );
 }

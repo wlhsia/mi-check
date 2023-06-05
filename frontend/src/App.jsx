@@ -18,7 +18,7 @@ export default function App() {
   const fetchUserData = () => {
     axios.get("/api/user").then((res) => {
       setUserData(res.data);
-    }).catch((err) => {
+    }).catch(() => {
       navigate("/login");
     });
   }
