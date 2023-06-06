@@ -5,6 +5,7 @@ class ProjectItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = ProjectItems
         include_fk = True
+        # exclude = ('CheckPhoto',)
     ProjectDetail = ma.Nested(lambda: ProjectSchema(exclude=('ProjectItems',)))
     ItemDetail = ma.Nested(lambda: ItemSchema(exclude=('Projects',)))
 

@@ -17,3 +17,5 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = "mssql+pyodbc:///?odbc_connect=" + params
     # SQLALCHEMY_DATABASE_URI = "sqlite:///mi.db"
+
+    UPLOAD_FOLDER = r"D:\project\mi-check\backend\images"

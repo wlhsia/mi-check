@@ -6,13 +6,14 @@ import Toolbar from "@mui/material/Toolbar";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 import { Context } from "../../App";
 
@@ -46,10 +47,14 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-
 export default function ProjectsDrawer(props) {
   const { userData } = React.useContext(Context);
   const { open, toggleDrawer, project, setProject } = props;
+  
+  const handleDeleteClick = (ProjectID) => {
+    axios.delete(`/api/projects/${ProjectID}`);
+  };
+
   // Modal
   const [modalOpen, setModalOpen] = React.useState(false);
   const toggleModal = () => {
@@ -78,40 +83,49 @@ export default function ProjectsDrawer(props) {
         </Toolbar>
         <Divider />
         <List component="nav">
-          {Object.keys(userData).length === 0 ? null : userData.Projects.map((p) => {
-            if (p.ProjectID === project.ProjectID) {
-              return (
-                <ListItemButton
-                  selected
-                  key={p.ProjectID}
-                  onClick={() => setProject(p)}
-                >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={p.ProjectNo} />
-                </ListItemButton>
-              );
-            } else {
-              return (
-                <ListItemButton
-                  key={p.ProjectID}
-                  onClick={() => setProject(p)}
-                >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={p.ProjectNo} />
-                </ListItemButton>
-              );
-            }
-          })}
+          {Object.keys(userData).length === 0
+            ? null
+            : userData.Projects.map((p) => {
+                if (p.ProjectID === project.ProjectID) {
+                  return (
+                    <ListItemButton
+                      selected
+                      key={p.ProjectID}
+                      onClick={() => setProject(p)}
+                    >
+                      <ListItemIcon>
+                        <AssignmentIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={p.ProjectNo} />
+                      <IconButton>
+                        <DeleteIcon
+                          onClick={() => handleDeleteClick(p.ProjectID)}
+                        />
+                      </IconButton>
+                    </ListItemButton>
+                  );
+                } else {
+                  return (
+                    <ListItemButton
+                      key={p.ProjectID}
+                      onClick={() => setProject(p)}
+                    >
+                      <ListItemIcon>
+                        <AssignmentIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={p.ProjectNo} />
+                      <IconButton>
+                        <DeleteIcon
+                          onClick={() => handleDeleteClick(p.ProjectID)}
+                        />
+                      </IconButton>
+                    </ListItemButton>
+                  );
+                }
+              })}
         </List>
       </Drawer>
-      <CreateProjectModal
-        open={modalOpen}
-        toggle={toggleModal}
-      />
+      <CreateProjectModal open={modalOpen} toggle={toggleModal} />
     </>
   );
 }

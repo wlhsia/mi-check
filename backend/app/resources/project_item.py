@@ -6,7 +6,6 @@ from app import db
 from ..models import *
 from ..schemas import *
 
-
 project_item_schema = ProjectItemSchema(unknown='exclude')
 project_items_schema = ProjectItemSchema(many=True)
 
@@ -14,6 +13,12 @@ class ProjectItem(Resource):
     def get(self, project_item_id):
         project_item = ProjectItems.query.filter(ProjectItems.ProjectItemID==project_item_id).first()
         return project_item_schema.dump(project_item)
+    def put(self, project_item_id):
+        loaded_project_item = project_item_schema.load(request.json)
+        project_item = ProjectItems(**loaded_project_item)
+        db.session.merge(project_item)
+        db.session.commit()
+        return 'success'
     def delete(self, project_item_id):
         project_item = ProjectItems.query.filter(ProjectItems.ProjectItemID==project_item_id).first()
         db.session.delete(project_item)
