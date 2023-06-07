@@ -46,8 +46,7 @@ class ProjectItems(db.Model):
     CheckDescription = db.Column(db.Unicode)
     CheckClass = db.Column(db.Unicode)
     DangerLevel = db.Column(db.String)
-    CheckPhotoName = db.Column(db.Unicode)
-    # CheckPhoto = db.Column(db.LargeBinary)
+    CheckPhoto = db.Column(db.Unicode)
     Score = db.Column(db.Float)
 
     ProjectDetail = db.relationship("Projects", foreign_keys=[ProjectID],  backref="ProjectItems")

@@ -28,7 +28,8 @@ export default function SummaryDatagrid(props) {
           CheckDescription: item.CheckDescription,
           CheckClass: item.CheckClass,
           DangerLevel: item.DangerLevel,
-          CheckPhotoName: item.CheckPhotoName,
+          CheckPhoto: item.CheckPhoto,
+          Score: item.Score,
           id: index + 1,
         };
       })
@@ -46,7 +47,7 @@ export default function SummaryDatagrid(props) {
     setRows(
       rows.map((row) =>
         row.id == event.target.id
-          ? { ...row, CheckPhotoName: event.target.files[0].name }
+          ? { ...row, CheckPhoto: event.target.files[0].name }
           : row
       )
     );
@@ -123,7 +124,7 @@ export default function SummaryDatagrid(props) {
       editable: true,
     },
     {
-      field: "CheckPhotoName",
+      field: "CheckPhoto",
       headerName: "查核照片",
       width: 200,
       renderCell: (param) => {
@@ -149,6 +150,12 @@ export default function SummaryDatagrid(props) {
         );
       },
     },
+    {
+      field: "Score",
+      headerName: "評核分數",
+      width: 100,
+      editable: true,
+    },
   ];
   return (
     <>
@@ -157,7 +164,7 @@ export default function SummaryDatagrid(props) {
           columns={columns}
           rows={rows}
           processRowUpdate={processRowUpdate}
-          rowHeight={40}
+          // rowHeight={40}
         />
       </div>
       <ProjectItemDetailModal

@@ -7,6 +7,15 @@ import Typography from "@mui/material/Typography";
 
 export default function CreateProjectModal(props) {
   const { open, toggle, projectItemID } = props;
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [projectItem, setProjectItem] = React.useState({});
+
+  React.useEffect(() => {
+    axios.get(`/api/project_items/${projectItemID}`).then((res) => {
+      setProjectItem(res.data);
+      setIsLoading(false);
+    });
+  }, [projectItemID]);
 
   return (
     <Modal open={open}>
@@ -20,16 +29,101 @@ export default function CreateProjectModal(props) {
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
-          display: "flex",
-          flexDirection: "column",
         }}
       >
-        <Typography variant="h6" component="h2">
-          查核主題(例:MI查核缺失管理)
-        </Typography>
-        <div>
-          <img src={`/api/photo/${projectItemID}`} width="300" height="200" />
-        </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            my: 1,
+          }}
+        >
+          <Typography variant="h4">MI查核缺失管理</Typography>
+        </Box>
+        {isLoading ? null : (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography variant="h5" component="h2">
+                  案號： {projectItem.ProjectDetail.ProjectNo}
+                </Typography>
+                <Typography variant="h6" component="h2" sx={{ mt: 2 }}>
+                  檢核日期： {projectItem.ProjectDetail.InspectedDate}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="h6" component="h2">
+                  缺失面相
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                width: "100%",
+              }}
+            >
+              <Box
+                bgcolor="warning.light"
+                sx={{
+                  px: 3,
+                  pb: 3,
+                }}
+              >
+                <Typography variant="h6" component="h2">
+                  查核時
+                </Typography>
+                <img
+                  src={`/api/photo/${projectItemID}`}
+                  width="100%"
+                  height="400"
+                />
+              </Box>
+              <Box
+                bgcolor="error.light"
+                sx={{
+                  px: 3,
+                }}
+              >
+                <Typography variant="h6" component="h2">
+                  改善後
+                </Typography>
+                <img  width="100%" height="400" alt="未上傳照片" />
+              </Box>
+              <Box>
+                <Typography variant="h6" component="h2">
+                  查核說明：
+                </Typography>
+                <Box
+                  bgcolor="warning.light"
+                  sx={{
+                    p: 2,
+                  }}
+                >
+                  {projectItem.CheckDescription}
+                </Box>
+              </Box>
+              <Box>
+                <Typography variant="h6" component="h2">
+                  改善說明：
+                </Typography>
+                <Box bgcolor="error.light"></Box>
+              </Box>
+            </Box>
+          </>
+        )}
         <Box
           sx={{
             display: "flex",
