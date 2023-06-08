@@ -6,7 +6,6 @@ from app import db
 from ..models import *
 from ..schemas import *
 
-
 item_schema = ItemSchema(unknown='exclude')
 items_schema = ItemSchema(many=True)
 
@@ -25,15 +24,14 @@ class Item(Resource):
 class ItemList(Resource):
     # @jwt_required()
     def get(self):
-        item_type_no = request.args['itemTypeNo']
-        if item_type_no is None:
+        item_type = request.args['itemType']
+        if item_type is None:
             items = Items.query.all()
         else:
-            items = Items.query.filter(Items.ItemTypeNo==item_type_no).all()
+            items = Items.query.filter(Items.ItemType==item_type).all()
         return items_schema.dump(items)
     # @jwt_required()
     def post(self):
-        print(request.json)
         loaded_item = item_schema.load(request.json)
         item = Items(**loaded_item)
         db.session.merge(item)

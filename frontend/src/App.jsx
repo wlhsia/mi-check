@@ -10,17 +10,25 @@ export const Context = React.createContext();
 export default function App() {
   const navigate = useNavigate();
 
-  const [userData, setUserData] = React.useState({})
+  const [userData, setUserData] = React.useState(null);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get("/api/user");
+      setUserData(response.data);
+    } catch (error) {
+      console.error(error);
+      navigate("/login");
+    }
+  };
+
   React.useEffect(() => {
-    fetchUserData()
+    fetchUserData();
   }, []);
 
-  const fetchUserData = () => {
-    axios.get("/api/user").then((res) => {
-      setUserData(res.data);
-    }).catch(() => {
-      navigate("/login");
-    });
+  if (!userData) {
+    console.log("Loading...");
+    return <div>Loading...</div>;
   }
 
   return (

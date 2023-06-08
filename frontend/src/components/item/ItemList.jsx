@@ -9,7 +9,7 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import ItemUpdateModal from "./ItemUpdateModal";
 
 export default function ItemList(props) {
-  const { itemTypeNo, itemType } = props;
+  const { itemType } = props;
 
   // Modal
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -17,17 +17,17 @@ export default function ItemList(props) {
   const [item, setItem] = React.useState({});
   const handleModalClose = () => {
     setModalOpen(false);
-    fetchRows(itemTypeNo);
+    fetchRows(itemType);
   };
 
   // Datagrid
   const [rows, setRows] = React.useState([]);
   React.useEffect(() => {
-    fetchRows(itemTypeNo);
+    fetchRows(itemType);
   }, []);
 
-  const fetchRows = (itemTypeNo) => {
-    axios.get(`/api/items?itemTypeNo=${itemTypeNo}`).then((response) => {
+  const fetchRows = (itemType) => {
+    axios.get(`/api/items?itemType=${itemType}`).then((response) => {
       const rows = response.data.map((item, index) => {
         return { ...item, id: index + 1 };
       });
@@ -79,7 +79,6 @@ export default function ItemList(props) {
   const handleAddClick = () => {
     setModalAction("新增");
     setItem({
-      ItemTypeNo: itemTypeNo,
       ItemType: itemType,
       ItemNo: "",
       Item: "",

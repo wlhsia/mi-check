@@ -27,13 +27,11 @@ function TabPanel(props) {
 }
 
 export default function ItemPage() {
-
   // Tab
   const [tabValue, setTabValue] = React.useState(0);
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
-
   return (
     <Container maxWidth="xl">
       <Typography
@@ -53,13 +51,13 @@ export default function ItemPage() {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <ItemList itemTypeNo="E" itemType="電儀" />
+          <ItemList itemType="E" />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <ItemList itemTypeNo="R" itemType="轉機" />
+          <ItemList itemType="R" />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <ItemList itemTypeNo="S" itemType="靜態" />
+          <ItemList itemType="S"  />
         </TabPanel>
       </Box>
     </Container>

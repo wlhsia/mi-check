@@ -1,5 +1,7 @@
 **/venv
 **/.venv
+**/images
+**/instance
 **/__pycache__
 
 

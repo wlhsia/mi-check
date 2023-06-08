@@ -145,7 +145,7 @@ export default function ResponsiveAppBar() {
                 }}
                 onClick={handleOpenUserMenu}
               >
-                {userData.UserName}
+                {userData.NotesID}
               </Typography>
             </Button>
           </Tooltip>

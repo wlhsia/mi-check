@@ -5,7 +5,6 @@ class ProjectItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = ProjectItems
         include_fk = True
-        # exclude = ('CheckPhoto',)
     ProjectDetail = ma.Nested(lambda: ProjectSchema(exclude=('ProjectItems',)))
     ItemDetail = ma.Nested(lambda: ItemSchema(exclude=('Projects',)))
 
@@ -13,17 +12,19 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Projects
         include_fk = True
-    Inspector = ma.Nested(lambda: UserSchema(exclude=('Projects',)))
-    InspectedUser = ma.Nested(lambda: UserSchema(exclude=('InspectedProjects',)))
-    ProjectItems = ma.Nested(ProjectItemSchema, many=True)
+    Inspector = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
+    InspectedUser = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
+    Supervisor = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
+    Manager = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
+    # ProjectItems = ma.Nested(ProjectItemSchema, many=True)
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Users
-        include_fk = True
-    Projects = ma.Nested(ProjectSchema, many=True)
-    InspectedProjects = ma.Nested(ProjectSchema, many=True)
-    Supervisor = ma.Nested('self', exclude=('Supervisor',))
+    InspectorProjects = ma.Nested(ProjectSchema(exclude=('Inspector', 'InspectedUser', 'Supervisor', 'Manager')), many=True)
+    InspectedUserProjects = ma.Nested(ProjectSchema(exclude=('Inspector', 'InspectedUser', 'Supervisor', 'Manager')), many=True)
+    SupervisorProjects = ma.Nested(ProjectSchema(exclude=('Inspector', 'InspectedUser', 'Supervisor', 'Manager')), many=True)
+    ManagerProjects = ma.Nested(ProjectSchema(exclude=('Inspector', 'InspectedUser', 'Supervisor', 'Manager')), many=True)
 
 class ItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

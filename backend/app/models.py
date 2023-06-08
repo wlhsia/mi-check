@@ -1,35 +1,39 @@
 from app import db
 
 class Users(db.Model):
+    __bind_key__ = 'mssql'
     __tablename__ = 'Users'
     UserID = db.Column(db.Integer, primary_key=True)
     NotesID = db.Column(db.String)
-    UserName = db.Column(db.Unicode)
-    DepartmentNo = db.Column(db.String)
+    Name = db.Column(db.Unicode)
+    Company = db.Column(db.String)
     Department = db.Column(db.String)
-    SupervisorID = db.Column(db.Integer, db.ForeignKey(UserID))
+    Section = db.Column(db.String)
     IsAdmin = db.Column(db.Boolean)
 
-    Supervisor = db.relationship('Users', remote_side=[UserID])
-
 class Projects(db.Model):
+    __bind_key__ = 'mssql'
     __tablename__ = 'Projects'
     ProjectID = db.Column(db.Integer, primary_key=True)
     ProjectNo = db.Column(db.String)
-    ProjectTypeNo = db.Column(db.String)
-    ProjectType = db.Column(db.Unicode)
+    ProjectType = db.Column(db.String)
+    InspectedDepartment = db.Column(db.String)
+    InspectedDate = db.Column(db.DateTime)
     InspectorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     InspectedUserID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
-    InspectedDate = db.Column(db.DateTime)
+    SupervisorID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
+    ManagerID = db.Column(db.Integer, db.ForeignKey(Users.UserID))
     IsScheduled = db.Column(db.Boolean)
 
-    Inspector = db.relationship("Users", foreign_keys=[InspectorID],  backref="Projects")
-    InspectedUser = db.relationship("Users", foreign_keys=[InspectedUserID], backref="InspectedProjects")
+    Inspector = db.relationship("Users", foreign_keys=[InspectorID],  backref="InspectorProjects")
+    InspectedUser = db.relationship("Users", foreign_keys=[InspectedUserID], backref="InspectedUserProjects")
+    Supervisor = db.relationship("Users", foreign_keys=[SupervisorID], backref="SupervisorProjects")
+    Manager = db.relationship("Users", foreign_keys=[ManagerID], backref="ManagerProjects")
     
 class Items(db.Model):
+    __bind_key__ = 'mssql'
     __tablename__ = 'Items'
     ItemID = db.Column(db.Integer, primary_key=True)
-    ItemTypeNo = db.Column(db.String)
     ItemType = db.Column(db.Unicode)
     ItemNo = db.Column(db.String)
     Item = db.Column(db.Unicode)
@@ -37,6 +41,7 @@ class Items(db.Model):
     Standard = db.Column(db.Unicode)
 
 class ProjectItems(db.Model):
+    __bind_key__ = 'mssql'
     __tablename__ = 'ProjectItems'
     ProjectItemID = db.Column(db.Integer, primary_key=True)
     ProjectID = db.Column(db.Integer, db.ForeignKey(Projects.ProjectID))
@@ -51,3 +56,11 @@ class ProjectItems(db.Model):
 
     ProjectDetail = db.relationship("Projects", foreign_keys=[ProjectID],  backref="ProjectItems")
     ItemDetail = db.relationship("Items", foreign_keys=[ItemID],  backref="Projects")
+
+class ERPUsers(db.Model):
+    __bind_key__ = 'oracle_tw'
+    __tablename__ = 'V0NBFC00'
+    EMPID = db.Column(db.String, primary_key=True)
+    NM = db.Column(db.Unicode)
+    CO = db.Column(db.String)
+    DP = db.Column(db.String)
