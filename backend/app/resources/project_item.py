@@ -28,17 +28,19 @@ class ProjectItem(Resource):
 class ProjectItemList(Resource):
     # @jwt_required()
     def get(self):
-        prject_id = request.args['prjectID']
-        if prject_id is None:
+        project_id = request.args['projectID']
+        if project_id is None:
             project_items = ProjectItems.query.all()
         else:
-            project_items = ProjectItems.query.filter(ProjectItems.ProjectID==prject_id).all()
+            project_items = ProjectItems.query.filter(ProjectItems.ProjectID==project_id).all()
         return project_items_schema.dump(project_items)
     # @jwt_required()
     def post(self):
+        created_project_items = []
         for row in request.json:
             loaded_project_item = project_item_schema.load(row)
             project_item = ProjectItems(**loaded_project_item)
-            db.session.merge(project_item)
+            db.session.add(project_item)
+            created_project_items.append(project_item)
         db.session.commit()
-        return 'success'
+        return project_items_schema.dump(created_project_items)

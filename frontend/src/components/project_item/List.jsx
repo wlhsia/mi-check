@@ -1,19 +1,34 @@
-import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
-ProjectItems.propTypes = {
+List.propTypes = {
   toggleModal: PropTypes.func,
   project: PropTypes.object,
   getItems: PropTypes.func,
+  projectItems: PropTypes.array,
+  projectItemsTemp: PropTypes.array,
+  setProjectItemsTemp: PropTypes.func,
+  getProjectItems: PropTypes.func,
+  postProjectItems: PropTypes.func,
+  putProject: PropTypes.func,
 };
 
-export default function ProjectItems(props) {
-  const { toggleModal, project, getItems } = props;
-  const [rows, setRows] = React.useState([]);
+export default function List(props) {
+  const {
+    toggleModal,
+    project,
+    getItems,
+    projectItems,
+    projectItemsTemp,
+    setProjectItemsTemp,
+    getProjectItems,
+    postProjectItems,
+    putProject,
+  } = props;
+
   let columns = [
     { field: "id", headerName: "項次", flex: 1 },
     { field: "ItemNo", headerName: "評核項目序號", flex: 1.5 },
@@ -28,7 +43,7 @@ export default function ProjectItems(props) {
       editable: true,
     },
   ];
-
+  
   columns = project.IsScheduled
     ? columns
     : [
@@ -46,14 +61,14 @@ export default function ProjectItems(props) {
                 icon={<DeleteIcon />}
                 label="Delete"
                 onClick={() => {
-                  const newRows = rows
+                  const newProjectItemsTemp = projectItemsTemp
                     .filter((row) => {
                       return row.id !== id;
                     })
                     .map((item, index) => {
                       return { ...item, id: index + 1 };
                     });
-                  setRows(newRows);
+                  setProjectItemsTemp(newProjectItemsTemp);
                 }}
                 color="error"
               />,
@@ -68,7 +83,9 @@ export default function ProjectItems(props) {
   };
 
   const processRowUpdate = (newRow) => {
-    setRows(rows.map((row) => (row.id === newRow.id ? newRow : row)));
+    setProjectItemsTemp(
+      projectItemsTemp.map((item) => (item.id === newRow.id ? newRow : item))
+    );
     return newRow;
   };
 
@@ -77,7 +94,7 @@ export default function ProjectItems(props) {
       <Box>
         <DataGrid
           sx={{ backgroundColor: "white", position: "relative" }}
-          rows={rows}
+          rows={project.IsScheduled ? projectItems : projectItemsTemp}
           columns={columns}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
@@ -105,7 +122,15 @@ export default function ProjectItems(props) {
               sx={{ ml: 1 }}
               variant="contained"
               color="success"
-              // onClick={handleScheduleClick}
+              onClick={async () => {
+                const newProjectItemsTemp = projectItemsTemp.map((item) => ({
+                  ...item,
+                  ProjectID: project.ProjectID,
+                }));
+                await postProjectItems(newProjectItemsTemp);
+                await putProject(project.ProjectID, { IsScheduled: true });
+                await getProjectItems(project.ProjectID);
+              }}
             >
               排定完成
             </Button>

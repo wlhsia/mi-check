@@ -36,8 +36,10 @@ export default function ProjectPage() {
     ProjectID: null,
   });
   const [items, setItems] = React.useState([]);
+  const [projectItemsTemp, setProjectItemsTemp] = React.useState([]);
+  const [projectItems, setProjectItems] = React.useState([]);
 
-  // Fetch
+  // Fetch API
   const postUser = async (notesID) => {
     try {
       const response = await axios.post(`/api/users`, {
@@ -61,7 +63,15 @@ export default function ProjectPage() {
   const deleteProject = async (projectID) => {
     try {
       await axios.delete(`/api/projects/${projectID}`);
+      setProject({ ProjectID: null });
       fetchUserData();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const putProject = async (projectID, p) => {
+    try {
+      await axios.put(`/api/projects/${projectID}`, p);
     } catch (error) {
       console.error(error);
     }
@@ -77,21 +87,37 @@ export default function ProjectPage() {
   const getItems = async (itemType) => {
     try {
       const response = await axios.get(`/api/items?itemType=${itemType}`);
-      setItems(response.data);
+      const items = response.data.map((item, index) => ({
+        ...item,
+        id: index + 1,
+      }));
+      setItems(items);
     } catch (error) {
       console.error(error);
     }
   };
-  // const getProjectItems = async (prjectID) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `/api/project_items?prjectID=${prjectID}`
-  //     );
-  //     setProjectItems(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getProjectItems = async (projectID) => {
+    try {
+      const response = await axios.get(
+        `/api/project_items?projectID=${projectID}`
+      );
+      const project_items = response.data.map((item, index) => ({
+        ...item,
+        id: index + 1,
+      }));
+      setProjectItems(project_items);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const postProjectItems = async (projectItems) => {
+    try {
+      const response = await axios.post(`/api/project_items`, projectItems);
+      // setProjectItems(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // ProjectDrawer
   const [drawerOpen, setDrawerOpen] = React.useState(true);
@@ -130,6 +156,7 @@ export default function ProjectPage() {
           project={project}
           getProject={getProject}
           deleteProject={deleteProject}
+          getProjectItems={getProjectItems}
         />
         <ProjectCreateModal
           open={projectCreateModalOpen}
@@ -137,11 +164,13 @@ export default function ProjectPage() {
           userData={userData}
           postUser={postUser}
           postProject={postProject}
+          getProject={getProject}
         />
         <ProjectItemAddModal
           open={projectItemAddModalOpen}
           toggle={toggleProjectItemAddModal}
           items={items}
+          setProjectItemsTemp={setProjectItemsTemp}
         />
         <Box
           sx={{
@@ -172,6 +201,12 @@ export default function ProjectPage() {
                   toggleModal={toggleProjectItemAddModal}
                   project={project}
                   getItems={getItems}
+                  projectItems={projectItems}
+                  projectItemsTemp={projectItemsTemp}
+                  setProjectItemsTemp={setProjectItemsTemp}
+                  getProjectItems={getProjectItems}
+                  postProjectItems={postProjectItems}
+                  putProject={putProject}
                 />
               </TabPanel>
               <TabPanel value={tabValue} index={2}></TabPanel>

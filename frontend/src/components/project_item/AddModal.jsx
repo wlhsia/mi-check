@@ -9,18 +9,12 @@ AddModal.propTypes = {
   open: PropTypes.bool,
   toggle: PropTypes.func,
   items: PropTypes.array,
+  setProjectItemsTemp: PropTypes.func,
 };
 
 export default function AddModal(props) {
-  const { open, toggle, items } = props;
-  const [rows, setRows] = React.useState([]);
-  console.log(items);
-  React.useEffect(() => {
-    const rows = items.map((item, index) => {
-      return { ...item, id: index + 1 };
-    });
-    setRows(rows);
-  }, []);
+  const { open, toggle, items, setProjectItemsTemp } = props;
+
   const columns = [
     { field: "id", headerName: "項次", flex: 1 },
     { field: "ItemNo", headerName: "評核項目序號", flex: 1.5 },
@@ -29,18 +23,18 @@ export default function AddModal(props) {
     { field: "Standard", headerName: "評核標準", flex: 10 },
   ];
 
-  // const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  // const handleAddClick = () => {
-  //   const rowsTemp = rows.filter((item) => {
-  //     return rowSelectionModel.includes(item.id);
-  //   });
-  //   setProjectItemsRows((prev) => {
-  //     return [...prev, ...rowsTemp].map((item, index) => {
-  //       return { ...item, id: index + 1 };
-  //     });
-  //   });
-  //   toggle();
-  // };
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const handleAddClick = () => {
+    const itemsTemp = items.filter((item) => {
+      return rowSelectionModel.includes(item.id);
+    });
+    setProjectItemsTemp((prev) => {
+      return [...prev, ...itemsTemp].map((item, index) => {
+        return { ...item, id: index + 1 };
+      });
+    });
+    toggle();
+  };
 
   return (
     <Modal open={open}>
@@ -57,17 +51,17 @@ export default function AddModal(props) {
         }}
       >
         <DataGrid
-          rows={rows}
+          rows={items}
           columns={columns}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10]}
           checkboxSelection
-          // onRowSelectionModelChange={(newRowSelectionModel) => {
-          //   setRowSelectionModel(newRowSelectionModel);
-          // }}
-          // rowSelectionModel={rowSelectionModel}
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setRowSelectionModel(newRowSelectionModel);
+          }}
+          rowSelectionModel={rowSelectionModel}
         />
         <Box
           sx={{
@@ -77,10 +71,9 @@ export default function AddModal(props) {
             "& .MuiButton-root": { marginLeft: 1 },
           }}
         >
-          {" "}
-          {/* <Button variant="contained" color="primary" onClick={handleAddClick}>
+          <Button variant="contained" color="primary" onClick={handleAddClick}>
             加入
-          </Button> */}
+          </Button>
           <Button variant="contained" color="error" onClick={toggle}>
             取消
           </Button>

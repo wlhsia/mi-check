@@ -16,7 +16,7 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
     InspectedUser = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
     Supervisor = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
     Manager = ma.Nested(lambda: UserSchema(exclude=('InspectorProjects', 'InspectedUserProjects', 'SupervisorProjects', 'ManagerProjects')))
-    # ProjectItems = ma.Nested(ProjectItemSchema, many=True)
+    ProjectItems = ma.Nested(ProjectItemSchema(exclude=('ProjectDetail',)), many=True)
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

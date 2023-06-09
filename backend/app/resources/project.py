@@ -10,12 +10,12 @@ projects_schema = ProjectSchema(many=True)
 
 class Project(Resource):
     def get(self, project_id):
-        project = Projects.query.filter(Projects.ProjectID==project_id).first()
+        project = Projects.query.get(project_id)
         return project_schema.dump(project)
     def put(self, project_id):
-        loaded_project = project_schema.load(request.json)
-        project = Projects(**loaded_project)
-        db.session.merge(project)
+        project = Projects.query.get(project_id)
+        for key, value in request.get_json().items():
+            setattr(project, key, value)
         db.session.commit()
         return project_schema.dump(project)
     def delete(self, project_id):

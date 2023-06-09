@@ -1,5 +1,4 @@
-import * as React from "react";
-import axios from "axios";
+import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
@@ -45,7 +44,18 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-export default function ProjectsDrawer(props) {
+ListDrawer.propTypes = {
+  open: PropTypes.bool,
+  toggleDrawer: PropTypes.func,
+  toggleModal: PropTypes.func,
+  userData: PropTypes.object,
+  project: PropTypes.object,
+  getProject: PropTypes.func,
+  deleteProject: PropTypes.func,
+  getProjectItems: PropTypes.func,
+};
+
+export default function ListDrawer(props) {
   const {
     open,
     toggleDrawer,
@@ -54,6 +64,7 @@ export default function ProjectsDrawer(props) {
     project,
     getProject,
     deleteProject,
+    getProjectItems,
   } = props;
 
   return (
@@ -83,34 +94,40 @@ export default function ProjectsDrawer(props) {
         {userData.InspectorProjects.map((p) => {
           if (p.ProjectID === project.ProjectID) {
             return (
-                <ListItemButton
-                  selected
-                  key={p.ProjectID}
-                  onClick={() => getProject(p.ProjectID)}
-                >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={p.ProjectNo} />
-                  {/* <Tooltip title="刪除"> */}
-                  <IconButton>
-                    <DeleteIcon onClick={() => deleteProject(p.ProjectID)} />
-                  </IconButton>
-                  {/* </Tooltip> */}
-                </ListItemButton>
-            );
-          } else {
-            return (
               <ListItemButton
+                selected
                 key={p.ProjectID}
-                onClick={() => getProject(p.ProjectID)}
+                onClick={() => {
+                  getProject(p.ProjectID);
+                  getProjectItems(p.ProjectID);
+                }}
               >
                 <ListItemIcon>
                   <AssignmentIcon />
                 </ListItemIcon>
                 <ListItemText primary={p.ProjectNo} />
-                <IconButton>
-                  <DeleteIcon onClick={() => deleteProject(p.ProjectID)} />
+                {/* <Tooltip title="刪除"> */}
+                <IconButton onClick={() => deleteProject(p.ProjectID)}>
+                  <DeleteIcon />
+                </IconButton>
+                {/* </Tooltip> */}
+              </ListItemButton>
+            );
+          } else {
+            return (
+              <ListItemButton
+                key={p.ProjectID}
+                onClick={() => {
+                  getProject(p.ProjectID);
+                  getProjectItems(p.ProjectID);
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary={p.ProjectNo} />
+                <IconButton onClick={() => deleteProject(p.ProjectID)}>
+                  <DeleteIcon />
                 </IconButton>
               </ListItemButton>
             );

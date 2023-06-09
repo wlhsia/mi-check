@@ -15,7 +15,7 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 
 import { Context } from '../App';
 
-const pages = ["查核項目基本資料", "查核案件", "查核&改善彙總"];
+const pages = ["查核項目基本資料", "查核案件", "查核案件彙總"];
 
 export default function ResponsiveAppBar() {
   const { userData } = React.useContext(Context);
@@ -46,7 +46,7 @@ export default function ResponsiveAppBar() {
       case "查核案件":
         navigate("/project");
         break;
-      case "查核&改善彙總":
+      case "查核案件彙總":
         navigate("/summary");
         break;
     }
