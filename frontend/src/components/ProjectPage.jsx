@@ -6,10 +6,12 @@ import Tab from "@mui/material/Tab";
 
 import { Context } from "../App";
 import Drawer from "./project/ListDrawer";
-import ProjectCreateModal from "./project/CreateModal";
+import ProjectCreateModal from "./project/BasicModal";
 import Basic from "./project/Basic";
-import ProjectItemList from "./project_item/List";
+import ProjectItemList from "./project_item/ScheduleList";
 import ProjectItemAddModal from "./project_item/AddModal";
+import ProjectItemCheckList from "./project_item/CheckList";
+import ProjectItemDetailModal from "./project_item/DetailModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -38,6 +40,7 @@ export default function ProjectPage() {
   const [items, setItems] = React.useState([]);
   const [projectItemsTemp, setProjectItemsTemp] = React.useState([]);
   const [projectItems, setProjectItems] = React.useState([]);
+  const [projectItem, setProjectItem] = React.useState(null);
 
   // Fetch API
   const postUser = async (notesID) => {
@@ -52,9 +55,9 @@ export default function ProjectPage() {
       console.error(error);
     }
   };
-  const postProject = async (p) => {
+  const postProject = async (payload) => {
     try {
-      await axios.post(`/api/projects`, p);
+      await axios.post(`/api/projects`, payload);
       fetchUserData();
     } catch (error) {
       console.error(error);
@@ -69,9 +72,11 @@ export default function ProjectPage() {
       console.error(error);
     }
   };
-  const putProject = async (projectID, p) => {
+  const putProject = async (projectID, payload) => {
     try {
-      await axios.put(`/api/projects/${projectID}`, p);
+      const response = await axios.put(`/api/projects/${projectID}`, payload);
+      setProject(response.data);
+      fetchUserData();
     } catch (error) {
       console.error(error);
     }
@@ -101,11 +106,13 @@ export default function ProjectPage() {
       const response = await axios.get(
         `/api/project_items?projectID=${projectID}`
       );
-      const project_items = response.data.map((item, index) => ({
+      const projectItems = response.data.map((item, index) => ({
         ...item,
+        ...item.ItemDetail,
         id: index + 1,
       }));
-      setProjectItems(project_items);
+      console.log(projectItems)
+      setProjectItems(projectItems);
     } catch (error) {
       console.error(error);
     }
@@ -114,6 +121,37 @@ export default function ProjectPage() {
     try {
       const response = await axios.post(`/api/project_items`, projectItems);
       // setProjectItems(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getProjectItem = async (projectItemID) => {
+    try {
+      const response = await axios.get(
+        `/api/project_items/${projectItemID}`
+      );
+      setProjectItem(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const putProjectItem = async (projectItemID, payload) => {
+    try {
+      await axios.put(`/api/project_items/${projectItemID}`, payload);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const deleteProjectItem = async (projectItemID) => {
+    try {
+      await axios.delete(`/api/project_items/${projectItemID}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const putProjectItemPhoto = async (projectItemID, photoType, formData) => {
+    try {
+      await axios.put(`/api/photo/${projectItemID}?photoType=${photoType}`, formData);
     } catch (error) {
       console.error(error);
     }
@@ -145,6 +183,13 @@ export default function ProjectPage() {
     setProjectItemAddModalOpen(!projectItemAddModalOpen);
   };
 
+  // ProjectItemDetailModal
+  const [projectItemDetailModalOpen, setProjectItemDetailModalOpen] =
+    React.useState(false);
+  const toggleProjectItemDetailModal = () => {
+    setProjectItemDetailModalOpen(!projectItemDetailModalOpen);
+  };
+
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -172,6 +217,13 @@ export default function ProjectPage() {
           items={items}
           setProjectItemsTemp={setProjectItemsTemp}
         />
+        {projectItem !== null ? (
+          <ProjectItemDetailModal
+            open={projectItemDetailModalOpen}
+            toggle={toggleProjectItemDetailModal}
+            project={project}
+            projectItem={projectItem}
+          />) : null}
         <Box
           sx={{
             backgroundColor: (theme) =>
@@ -207,9 +259,19 @@ export default function ProjectPage() {
                   getProjectItems={getProjectItems}
                   postProjectItems={postProjectItems}
                   putProject={putProject}
+                  deleteProjectItem={deleteProjectItem}
                 />
               </TabPanel>
-              <TabPanel value={tabValue} index={2}></TabPanel>
+              <TabPanel value={tabValue} index={2}>
+                <ProjectItemCheckList
+                  projectItems={projectItems}
+                  setProjectItems={setProjectItems}
+                  getProjectItem={getProjectItem}
+                  putProjectItem={putProjectItem}
+                  toggleDetailModal={toggleProjectItemDetailModal}
+                  putProjectItemPhoto={putProjectItemPhoto}
+                />
+              </TabPanel>
             </>
           ) : null}
         </Box>

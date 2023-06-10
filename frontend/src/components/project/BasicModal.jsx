@@ -48,9 +48,8 @@ const departments = [
 
 export default function PostProjectModal(props) {
   const { open, toggle, userData, postUser, postProject } = props;
-
   const now = dayjs();
-  const today = now.startOf("day");
+  const today = now.startOf("day").add(8, 'hour');
   const [formattedDate, setFormattedDate] = React.useState(
     today.format("YYYYMMDD")
   );
@@ -123,7 +122,7 @@ export default function PostProjectModal(props) {
         }}
       >
         <Typography variant="h6" component="h2">
-          查核案件基本資料
+          新增查核案件
         </Typography>
         <Box
           sx={{

@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
-List.propTypes = {
+ScheduleList.propTypes = {
   toggleModal: PropTypes.func,
   project: PropTypes.object,
   getItems: PropTypes.func,
@@ -14,9 +14,10 @@ List.propTypes = {
   getProjectItems: PropTypes.func,
   postProjectItems: PropTypes.func,
   putProject: PropTypes.func,
+  deleteProjectItem: PropTypes.func,
 };
 
-export default function List(props) {
+export default function ScheduleList(props) {
   const {
     toggleModal,
     project,
@@ -27,6 +28,7 @@ export default function List(props) {
     getProjectItems,
     postProjectItems,
     putProject,
+    deleteProjectItem
   } = props;
 
   let columns = [
@@ -43,44 +45,61 @@ export default function List(props) {
       editable: true,
     },
   ];
-  
+
   columns = project.IsScheduled
     ? columns
     : [
-        ...columns,
-        {
-          field: "delete",
-          type: "actions",
-          headerName: "刪除",
-          flex: 1,
-          getActions: ({ id }) => {
-            return [
-              <GridActionsCellItem
-                key={id}
-                id="delete"
-                icon={<DeleteIcon />}
-                label="Delete"
-                onClick={() => {
-                  const newProjectItemsTemp = projectItemsTemp
-                    .filter((row) => {
-                      return row.id !== id;
-                    })
-                    .map((item, index) => {
-                      return { ...item, id: index + 1 };
-                    });
-                  setProjectItemsTemp(newProjectItemsTemp);
-                }}
-                color="error"
-              />,
-            ];
-          },
+      ...columns,
+      {
+        field: "delete",
+        type: "actions",
+        headerName: "刪除",
+        flex: 1,
+        getActions: ({id ,row}) => {
+          return [
+            <GridActionsCellItem
+              key={id}
+              id="delete"
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={() => {
+                const newProjectItemsTemp = projectItemsTemp
+                  .filter((row) => {
+                    return row.id !== id;
+                  })
+                  .map((item, index) => {
+                    return { ...item, id: index + 1 };
+                  });
+                setProjectItemsTemp(newProjectItemsTemp);
+                deleteProjectItem(row.ProjectItemID)
+              }}
+              color="error"
+            />,
+          ];
         },
-      ];
+      },
+    ];
 
   const handleAddClick = () => {
     toggleModal();
     getItems(project.ProjectType);
   };
+
+  const handleScheduleClick = async () => {
+    const newProjectItemsTemp = projectItemsTemp.map((item) => ({
+      ...item,
+      ProjectID: project.ProjectID,
+    }));
+    await postProjectItems(newProjectItemsTemp);
+    await putProject(project.ProjectID, { IsScheduled: true });
+    await getProjectItems(project.ProjectID);
+  }
+
+  const handleEditClick = async () => {
+    await putProject(project.ProjectID, { IsScheduled: false });
+    // const newProjectItemsTemp = projectItems.map((item) => ({})
+    setProjectItemsTemp(projectItems)
+  }
 
   const processRowUpdate = (newRow) => {
     setProjectItemsTemp(
@@ -109,9 +128,9 @@ export default function List(props) {
             sx={{ ml: 1 }}
             variant="contained"
             color="success"
-            // onClick={handleScheduleClick}
+            onClick={handleEditClick}
           >
-            匯出csv
+            修改項目
           </Button>
         ) : (
           <>
@@ -122,17 +141,9 @@ export default function List(props) {
               sx={{ ml: 1 }}
               variant="contained"
               color="success"
-              onClick={async () => {
-                const newProjectItemsTemp = projectItemsTemp.map((item) => ({
-                  ...item,
-                  ProjectID: project.ProjectID,
-                }));
-                await postProjectItems(newProjectItemsTemp);
-                await putProject(project.ProjectID, { IsScheduled: true });
-                await getProjectItems(project.ProjectID);
-              }}
+              onClick={handleScheduleClick}
             >
-              排定完成
+              排定項目
             </Button>
           </>
         )}
