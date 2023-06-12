@@ -10,13 +10,13 @@ import ProjectCreateModal from "./project/BasicModal";
 import Basic from "./project/Basic";
 import ProjectItemList from "./project_item/ScheduleList";
 import ProjectItemAddModal from "./project_item/AddModal";
-import ProjectItemCheckList from "./project_item/CheckList";
+import ProjectItemCheckImproveList from "./project_item/CheckImproveList";
 import ProjectItemDetailModal from "./project_item/DetailModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -27,7 +27,7 @@ function TabPanel(props) {
           <Box>{children}</Box>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -111,7 +111,6 @@ export default function ProjectPage() {
         ...item.ItemDetail,
         id: index + 1,
       }));
-      console.log(projectItems)
       setProjectItems(projectItems);
     } catch (error) {
       console.error(error);
@@ -127,14 +126,12 @@ export default function ProjectPage() {
   };
   const getProjectItem = async (projectItemID) => {
     try {
-      const response = await axios.get(
-        `/api/project_items/${projectItemID}`
-      );
+      const response = await axios.get(`/api/project_items/${projectItemID}`);
       setProjectItem(response.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
   const putProjectItem = async (projectItemID, payload) => {
     try {
       await axios.put(`/api/project_items/${projectItemID}`, payload);
@@ -151,7 +148,10 @@ export default function ProjectPage() {
   };
   const putProjectItemPhoto = async (projectItemID, photoType, formData) => {
     try {
-      await axios.put(`/api/photo/${projectItemID}?photoType=${photoType}`, formData);
+      await axios.put(
+        `/api/photo/${projectItemID}?photoType=${photoType}`,
+        formData
+      );
     } catch (error) {
       console.error(error);
     }
@@ -223,7 +223,8 @@ export default function ProjectPage() {
             toggle={toggleProjectItemDetailModal}
             project={project}
             projectItem={projectItem}
-          />) : null}
+          />
+        ) : null}
         <Box
           sx={{
             backgroundColor: (theme) =>
@@ -242,7 +243,7 @@ export default function ProjectPage() {
                 <Tabs value={tabValue} onChange={handleTabChange}>
                   <Tab label="查核案件基本資料" />
                   <Tab label="查核項目排訂" />
-                  <Tab label="查核" />
+                  <Tab label="查核&改善" />
                 </Tabs>
               </Box>
               <TabPanel value={tabValue} index={0}>
@@ -263,7 +264,9 @@ export default function ProjectPage() {
                 />
               </TabPanel>
               <TabPanel value={tabValue} index={2}>
-                <ProjectItemCheckList
+                <ProjectItemCheckImproveList
+                  project={project}
+                  putProject={putProject}
                   projectItems={projectItems}
                   setProjectItems={setProjectItems}
                   getProjectItem={getProjectItem}

@@ -135,7 +135,7 @@ export default function ListDrawer(props) {
         })}
         <Divider sx={{ my: 1 }} />
         <ListSubheader component="div" inset>
-          被查核案件
+          受查核案件
         </ListSubheader>
       </List>
     </Drawer>

@@ -29,11 +29,11 @@ class Config:
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
-    # SQLALCHEMY_DATABASE_URI = mssql
-    # SQLALCHEMY_BINDS = {
-    #     "mssql": mssql,
-    #     "oracle_tw": oracle_tw
-    # }
+    SQLALCHEMY_DATABASE_URI = mssql
+    SQLALCHEMY_BINDS = {
+        "mssql": mssql,
+        "oracle_tw": oracle_tw
+    }
     UPLOAD_FOLDER = r"D:\project\mi-check\backend\images"
     
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///mi.db' 
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///mi.db' 

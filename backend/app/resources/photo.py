@@ -7,8 +7,8 @@ from app import db
 from ..models import *
 from ..schemas import *
 
-# path = r"D:\project\mi-check\backend\images"
-path = r"/Users/wlhsia/project/mi-check/backend/images"
+path = r"D:\project\mi-check\backend\images"
+# path = r"/Users/wlhsia/project/mi-check/backend/images"
 
 class Photo(Resource):
     def get(self, project_item_id):

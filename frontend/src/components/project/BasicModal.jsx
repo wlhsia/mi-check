@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -46,10 +47,18 @@ const departments = [
   },
 ];
 
-export default function PostProjectModal(props) {
+BasicModal.propTypes = {
+  open: PropTypes.bool,
+  toggle: PropTypes.func,
+  userData: PropTypes.object,
+  postUser: PropTypes.func,
+  postProject: PropTypes.func,
+};
+
+export default function BasicModal(props) {
   const { open, toggle, userData, postUser, postProject } = props;
   const now = dayjs();
-  const today = now.startOf("day").add(8, 'hour');
+  const today = now.startOf("day").add(8, "hour");
   const [formattedDate, setFormattedDate] = React.useState(
     today.format("YYYYMMDD")
   );
@@ -101,6 +110,9 @@ export default function PostProjectModal(props) {
       ManagerID: managerID,
       InspectorID: userData.UserID,
       IsScheduled: false,
+      IsChecked: false,
+      IsImproved: false,
+      IsManaged: false,
     });
     toggle();
   };
@@ -208,7 +220,7 @@ export default function PostProjectModal(props) {
           <TextField
             id="manager"
             name="manager"
-            label="經理室NotesID"
+            label="經理室專人NotesID"
             required
             value={form.manager}
             onChange={handleFormChange}

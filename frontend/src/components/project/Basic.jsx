@@ -20,8 +20,12 @@ Basic.propTypes = {
   project: PropTypes.object,
 };
 
-export default function Basic(props) {
+function Basic(props) {
   const { project } = props;
+  const [isEdit, setIsEdit] = React.useState(false);
+  const handleEditClick = () => {
+    setIsEdit(!isEdit);
+  };
   return (
     <Box
       sx={{
@@ -34,48 +38,73 @@ export default function Basic(props) {
     >
       <TextField
         id="projectNo"
-        disabled
         label="查核案號"
+        disabled
+        required
         value={project.ProjectNo}
       />
-      <TextField
-        id="projectType"
-        disabled
-        label="機能組"
-        value={project.ProjectType}
-      />
-      <TextField
-        id="inspectedDepartment"
-        disabled
-        label="受檢單位"
-        value={project.InspectedDepartment}
-      />
-      <TextField
-        id="inspectedDate"
-        disabled
-        label="受檢日期"
-        value={project.InspectedDate}
-      />
+      <FormControl>
+        <InputLabel id="projectTypeLabel" required>
+          機能組
+        </InputLabel>
+        <Select
+          id="projectType"
+          label="projectType"
+          disabled={!isEdit}
+          value={project.ProjectType}
+        >
+          <MenuItem value={"E"}>電儀(E)</MenuItem>
+          <MenuItem value={"R"}>轉機(R)</MenuItem>
+          <MenuItem value={"S"}>靜態(S)</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl>
+        <InputLabel id="inspectedDepartment" required>
+          受檢單位
+        </InputLabel>
+        <Select
+          id="inspectedDepartment"
+          label="inspectedDepartment"
+          disabled={!isEdit}
+          value={project.InspectedDepartment}
+        >
+          <MenuItem value={"H1"}>ARO1廠(H1)</MenuItem>
+          <MenuItem value={"H2"}>ARO2廠(H2)</MenuItem>
+          <MenuItem value={"H3"}>ARO3廠(H3)</MenuItem>
+          <MenuItem value={"30"}>設保組(30)</MenuItem>
+        </Select>
+      </FormControl>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"zh-cn"}>
+        <DatePicker
+          label="受檢日期"
+          name="inspectedDate"
+          disabled={!isEdit}
+          required
+          value={dayjs(project.InspectedDate)}
+        />
+      </LocalizationProvider>
       <TextField
         id="inspectedUser"
-        disabled
-        label="經辦"
+        label={isEdit ? "經辦NotesID" : "經辦"}
+        disabled={!isEdit}
         required
-        value={project.InspectedUser.Name}
+        value={
+          isEdit ? project.InspectedUser.NotesID : project.InspectedUser.Name
+        }
       />
       <TextField
         id="supervisor"
-        disabled
-        label="主管"
+        label={isEdit ? "主管NotesID" : "主管"}
+        disabled={!isEdit}
         required
-        value={project.Supervisor.Name}
+        value={isEdit ? project.Supervisor.NotesID : project.Supervisor.Name}
       />
       <TextField
         id="manager"
-        disabled
-        label="經理室"
+        disabled={!isEdit}
+        label={isEdit ? "經理室專人NotesID" : "經理室專人"}
         required
-        value={project.Manager.Name}
+        value={isEdit ? project.Manager.NotesID : project.Manager.Name}
       />
       <TextField
         id="inspector"
@@ -84,6 +113,18 @@ export default function Basic(props) {
         required
         value={project.Inspector.Name}
       />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+        <Button
+          variant="contained"
+          color={isEdit ? "success" : "warning"}
+          disabled={project.IsScheduled}
+          onClick={handleEditClick}
+        >
+          {isEdit ? "修改完成" : "修改基本資料"}
+        </Button>
+      </Box>
     </Box>
   );
 }
+
+export default Basic;

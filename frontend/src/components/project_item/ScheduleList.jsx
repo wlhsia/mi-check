@@ -28,7 +28,7 @@ export default function ScheduleList(props) {
     getProjectItems,
     postProjectItems,
     putProject,
-    deleteProjectItem
+    deleteProjectItem,
   } = props;
 
   let columns = [
@@ -49,36 +49,36 @@ export default function ScheduleList(props) {
   columns = project.IsScheduled
     ? columns
     : [
-      ...columns,
-      {
-        field: "delete",
-        type: "actions",
-        headerName: "刪除",
-        flex: 1,
-        getActions: ({id ,row}) => {
-          return [
-            <GridActionsCellItem
-              key={id}
-              id="delete"
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={() => {
-                const newProjectItemsTemp = projectItemsTemp
-                  .filter((row) => {
-                    return row.id !== id;
-                  })
-                  .map((item, index) => {
-                    return { ...item, id: index + 1 };
-                  });
-                setProjectItemsTemp(newProjectItemsTemp);
-                deleteProjectItem(row.ProjectItemID)
-              }}
-              color="error"
-            />,
-          ];
+        ...columns,
+        {
+          field: "delete",
+          type: "actions",
+          headerName: "刪除",
+          flex: 1,
+          getActions: ({ id, row }) => {
+            return [
+              <GridActionsCellItem
+                key={id}
+                id="delete"
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={() => {
+                  const newProjectItemsTemp = projectItemsTemp
+                    .filter((row) => {
+                      return row.id !== id;
+                    })
+                    .map((item, index) => {
+                      return { ...item, id: index + 1 };
+                    });
+                  setProjectItemsTemp(newProjectItemsTemp);
+                  deleteProjectItem(row.ProjectItemID);
+                }}
+                color="error"
+              />,
+            ];
+          },
         },
-      },
-    ];
+      ];
 
   const handleAddClick = () => {
     toggleModal();
@@ -93,13 +93,12 @@ export default function ScheduleList(props) {
     await postProjectItems(newProjectItemsTemp);
     await putProject(project.ProjectID, { IsScheduled: true });
     await getProjectItems(project.ProjectID);
-  }
+  };
 
   const handleEditClick = async () => {
     await putProject(project.ProjectID, { IsScheduled: false });
-    // const newProjectItemsTemp = projectItems.map((item) => ({})
-    setProjectItemsTemp(projectItems)
-  }
+    setProjectItemsTemp(projectItems);
+  };
 
   const processRowUpdate = (newRow) => {
     setProjectItemsTemp(
@@ -123,7 +122,7 @@ export default function ScheduleList(props) {
         />
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-        {project.IsScheduled ? (
+        {/* {project.IsScheduled ? (
           <Button
             sx={{ ml: 1 }}
             variant="contained"
@@ -146,7 +145,23 @@ export default function ScheduleList(props) {
               排定項目
             </Button>
           </>
-        )}
+        )} */}
+        <Button
+          variant="contained"
+          onClick={handleAddClick}
+          disabled={project.IsScheduled}
+        >
+          加入項目
+        </Button>
+        <Button
+          sx={{ ml: 1 }}
+          variant="contained"
+          color="success"
+          onClick={handleScheduleClick}
+          disabled={project.IsScheduled}
+        >
+          排定項目
+        </Button>
       </Box>
     </>
   );
